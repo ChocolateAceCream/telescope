@@ -1,0 +1,19 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    privileged: true
+    volumes:
+      - /home/ubuntu/docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      # - ./dist/:/var/www/http
+      - /home/ubuntu/docker/nginx/www/:/var/www/
+      #ssl certificate
+      - /root/docker/nginx/cert/:/etc/nginx/cert/
+      #logs
+      - /home/ubuntu/log/nginx/:/etc/nginx/logs/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
