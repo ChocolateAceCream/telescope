@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* fonts.css */
+@font-face {
+  font-family: 'Chewy';
+  src: url('@/assets/fonts/Chewy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  /* Regular */
+  font-style: normal;
+}
+
+.font-chewy {
+  font-family: 'Chewy', cursive;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('@/assets/fonts/Baloo2-Regular.ttf') format('truetype');
+  font-weight: 400;
+  /* Regular */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('@/assets/fonts/Baloo2-Medium.ttf') format('truetype');
+  font-weight: 500;
+  /* Medium */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('@/assets/fonts/Baloo2-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  /* SemiBold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('@/assets/fonts/Baloo2-Bold.ttf') format('truetype');
+  font-weight: 700;
+  /* Bold */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('@/assets/fonts/Baloo2-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  /* ExtraBold */
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'font-sans', 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* background-color: black; */
+}
+
+/* a {
+  color: inherit;
+  text-decoration: none;
+} */
+
+/* noto is good for multi-lang*/
+#root {
+  @apply h-screen;
+  /* @apply h-screen font-chewy bg-lite-purple; */
+  width: 100%;
+  display: flex;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  overflow: hidden; /* Prevent scrolling if not desired */
+  display: flex; /* Use flexbox for layout control */
+  flex-direction: column; /* Align children vertically */
+}
