@@ -1,0 +1,27 @@
+version: "2"
+cloud:
+    organization: ""
+    project: ""
+    hostname: ""
+sql:
+    - engine: "postgresql"
+      schema: "../db/migration"
+      queries: "db/query"
+      gen:
+        go:
+            package: "db"
+            sql_package: "pgx/v5"
+            out: "db/sqlc"
+            overrides:
+                - db_type: "timestamptz"
+                  go_type: "time.Time"
+                - db_type: "uuid"
+                  go_type: "github.com/google/uuid.UUID"
+                - db_type: "boolean"
+                  go_type: "bool"
+
+
+
+plugins: []
+rules: []
+options: {}

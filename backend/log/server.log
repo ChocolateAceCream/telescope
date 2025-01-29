@@ -1,0 +1,31 @@
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 16:33:18.259 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 16:33:18.259 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 16:33:18.259 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 16:33:18.263 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 16:33:18.290 	[31merror[0m	[utils/migrate.go:17]	cannot create migration	{"serviceName": "wsl", "error": "failed to open database: pq: permission denied for schema public in line 0: CREATE TABLE IF NOT EXISTS \"public\".\"schema_migrations\" (version bigint not null primary key, dirty boolean not null)"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 18:57:07.307 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 18:57:07.307 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 18:57:07.307 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 18:57:07.308 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 18:57:07.329 	[31merror[0m	[utils/migrate.go:17]	cannot create migration	{"serviceName": "wsl", "error": "failed to open database: pq: permission denied for schema public in line 0: CREATE TABLE IF NOT EXISTS \"public\".\"schema_migrations\" (version bigint not null primary key, dirty boolean not null)"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:00:37.474 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:00:37.474 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:00:37.474 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:00:37.475 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:00:37.490 	[31merror[0m	[utils/migrate.go:17]	cannot create migration	{"serviceName": "wsl", "error": "failed to open database: pq: permission denied for schema public in line 0: CREATE TABLE IF NOT EXISTS \"public\".\"schema_migrations\" (version bigint not null primary key, dirty boolean not null)"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.619 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.620 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.620 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.620 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.662 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.667 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:26.667 	[34minfo[0m	[workers/init.go:64]	all worker pools start success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:13:27.421 	[31merror[0m	[workers/resizer.go:52]	Failed to create kafka consumer group	{"serviceName": "wsl", "error": "kafka: client has run out of available brokers to talk to: 3 errors occurred:\n\t* dial tcp 127.0.0.1:29092: connect: connection refused\n\t* dial tcp 127.0.0.1:49092: connect: connection refused\n\t* dial tcp 127.0.0.1:39092: connect: connection refused\n"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:32.032 	[34minfo[0m	[backend/main.go:89]	Shuting down Server ...	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:32.043 	[34minfo[0m	[backend/main.go:97]	Server exist successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.109 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.109 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.109 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.109 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.127 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.132 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
