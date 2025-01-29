@@ -29,3 +29,4 @@
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.109 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.127 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 19:15:34.132 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/28 - 20:36:36.544 	[31merror[0m	[utils/session.go:54]	get session failed	{"serviceName": "wsl", "error": "redis: nil"}

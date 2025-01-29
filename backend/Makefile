@@ -22,7 +22,7 @@ migration_up:
 migration_down:
 	ENV=$(ENV) . ./load_env.sh && migrate -path $(MIGRATION_DIR) -database "postgresql://$$DB_USER:$$DB_PASSWORD@$$DB_HOST:$$DB_PORT/$$DB_NAME?sslmode=disable" -verbose down 1
 
-# Usage: make migrate_force version=2
+# Usage: make migration_force version=2
 migration_force:
 	@if [ -z "$(version)" ]; then \
 		echo "Error: You must specify a version number, e.g., 'make migrate_force version=2'"; \

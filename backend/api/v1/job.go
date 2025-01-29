@@ -30,7 +30,7 @@ func (j *JobApi) Upload(c *gin.Context) {
 	err = producer.Push("admin1", strconv.Itoa(int(uid)), "resizer")
 	if err != nil {
 		singleton.Logger.Error("Failed to push message to kafka", zap.String("error", err.Error()))
-		response.FailWithMessage(c, "error.kafka.push")
+		response.FailWithMessage(c, "error.failed.operation")
 		return
 	}
 	response.OkWithMessage(c, "success")
