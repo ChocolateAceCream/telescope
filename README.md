@@ -18,3 +18,11 @@ steps:
 3. go mod tidy
 4. change env variables in config.yaml
 5. go run main.go
+
+
+# Dev Journal
+## 2025/01/28
+Happy Chinese New Year!
+- [x] add skeleton backend
+- [x] add db
+- [x] add docker for kafka
