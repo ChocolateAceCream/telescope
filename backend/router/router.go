@@ -17,6 +17,7 @@ func RouteLoader(r *gin.Engine) {
 	sseApi := apiV1.SSEApi{}
 	jobApi := apiV1.JobApi{}
 	awsApi := apiV1.AwsApi{}
+	localeApi := apiV1.LocaleApi{}
 	v1 := r.Group("/api/v1")
 	v1.Use(middleware.SessionMiddleware())
 	PublicGroup := v1.Group("/public")
@@ -27,6 +28,11 @@ func RouteLoader(r *gin.Engine) {
 	// auth.Use(middleware.DefaultLimiter()).Use(middleware.SessionMiddleware())
 	{
 		auth.POST("/login", authApi.Login)
+	}
+
+	locale := PublicGroup.Group("/locale")
+	{
+		locale.POST("/reload", localeApi.LoadTranslation)
 	}
 
 	PrivateGroup := v1.Group("")

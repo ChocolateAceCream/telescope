@@ -4,7 +4,8 @@ CREATE TABLE locale (
   raw_message TEXT NOT NULL,
   translated_message TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  CONSTRAINT unique_language_raw_message UNIQUE (language, raw_message)
 );
 CREATE TRIGGER "locale_updated_at" BEFORE
 INSERT

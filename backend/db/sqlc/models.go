@@ -33,6 +33,15 @@ type GoogleLogin struct {
 	UpdatedAt   pgtype.Timestamp
 }
 
+type Locale struct {
+	ID                int32
+	Language          string
+	RawMessage        string
+	TranslatedMessage string
+	CreatedAt         pgtype.Timestamp
+	UpdatedAt         pgtype.Timestamp
+}
+
 type Test struct {
 	ID        int32
 	Name      string

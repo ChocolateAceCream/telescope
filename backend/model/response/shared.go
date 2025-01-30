@@ -32,11 +32,26 @@ const (
 	UNAUTHORIZED = 401
 )
 
+var TranslationMapper map[string]map[string]string
+
+func translate(c *gin.Context, raw string) (translated string) {
+	lang := c.GetHeader("Language")
+	dictionary, ok := TranslationMapper[lang]
+	if !ok {
+		dictionary = TranslationMapper["en"]
+	}
+	translated, ok = dictionary[raw]
+	if !ok {
+		return raw
+	}
+	return
+}
+
 func ResponseGenerator(c *gin.Context, code int, data interface{}, msg string) {
 	c.JSON(http.StatusOK, Response{
 		code,
 		data,
-		msg,
+		translate(c, msg),
 	})
 }
 
