@@ -1,3 +1,3 @@
 backend/config.yaml
 backend/log/server.log
-backend/log/server.log
+docker/pgsql/data

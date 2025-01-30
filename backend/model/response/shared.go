@@ -35,7 +35,7 @@ const (
 
 func translate(c *gin.Context, raw string) (translated string) {
 	mapper := singleton.Translation
-	lang := c.GetHeader("Language")
+	lang := c.GetHeader("X-Language")
 	dictionary, ok := mapper[lang]
 	if !ok {
 		dictionary = mapper["en"]

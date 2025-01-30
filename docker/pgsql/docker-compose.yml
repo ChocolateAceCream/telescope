@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: secret
       # POSTGRES_DB: iot_backend // init in sql script
     ports:
-      - '5432:5432'
+      - '5555:5432'
     volumes:
       - ./data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d

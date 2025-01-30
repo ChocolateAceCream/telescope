@@ -2,6 +2,7 @@ import axios from 'axios'
 import supportCancelToken from './cancelToken'
 import { addSignature } from './signature'
 import showNotification from '@/components/notification'
+import userStore from '@/store/user'
 // import { logout } from '@/shared/hooks/index'
 import NProgress from 'nprogress'
 import qs from 'qs'
@@ -45,6 +46,9 @@ let logoutFlag = false
 apiAxios.interceptors.request.use(
   (config) => {
     activeRequest++
+
+    const { language } = userStore.getState().user
+    config.headers['X-Language'] = language
     if (config['Content-Type']) {
       config.headers['Content-Type'] = config['Content-Type']
     } else {

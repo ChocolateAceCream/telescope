@@ -75,3 +75,50 @@
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/29 - 19:25:41.156 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/29 - 19:25:41.183 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
 [github.com/ChocolateAceCream/telescope/backend] 2025/01/29 - 19:25:41.190 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/29 - 20:10:07.931 	[31merror[0m	[utils/session.go:54]	get session failed	{"serviceName": "wsl", "error": "redis: nil"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/29 - 20:10:10.694 	[31merror[0m	[utils/session.go:54]	get session failed	{"serviceName": "wsl", "error": "redis: nil"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:04:08.212 	[31merror[0m	[utils/session.go:54]	get session failed	{"serviceName": "wsl", "error": "redis: nil"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:03.821 	[34minfo[0m	[backend/main.go:89]	Shuting down Server ...	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:03.823 	[34minfo[0m	[backend/main.go:97]	Server exist successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.485 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.485 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.485 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.486 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.510 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 10:16:05.522 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:24.438 	[34minfo[0m	[backend/main.go:89]	Shuting down Server ...	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:24.441 	[34minfo[0m	[backend/main.go:97]	Server exist successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.307 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.307 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.308 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.310 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.359 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:27.376 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 11:01:32.994 	[31merror[0m	[utils/session.go:54]	get session failed	{"serviceName": "wsl", "error": "redis: nil"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:02:29.194 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:02:29.195 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:02:29.195 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:02:29.196 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:02:29.245 	[31merror[0m	[utils/migrate.go:17]	cannot create migration	{"serviceName": "wsl", "error": "failed to open database: pq: permission denied for schema public in line 0: CREATE TABLE IF NOT EXISTS \"public\".\"schema_migrations\" (version bigint not null primary key, dirty boolean not null)"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.307 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.307 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.307 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.308 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.324 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:09:34.333 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:34.631 	[34minfo[0m	[backend/main.go:94]	Shuting down Server ...	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:34.632 	[34minfo[0m	[backend/main.go:102]	Server exist successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.566 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.567 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.567 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.567 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.583 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:13:43.600 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:00.875 	[34minfo[0m	[backend/main.go:94]	Shuting down Server ...	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:00.876 	[34minfo[0m	[backend/main.go:102]	Server exist successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.162 	[33mwarn[0m	[lib/logger.go:111]	warn: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.162 	[34minfo[0m	[lib/logger.go:112]	info: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.162 	[31merror[0m	[lib/logger.go:113]	err: log initialization successful	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.163 	[34minfo[0m	[utils/redis.go:23]	redis connect ping success, response is: 	{"serviceName": "wsl", "pong": "PONG"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.180 	[34minfo[0m	[utils/migrate.go:24]	migrate success	{"serviceName": "wsl"}
+[github.com/ChocolateAceCream/telescope/backend] 2025/01/30 - 12:15:02.185 	[34minfo[0m	[dataInitializer/dataInitializer.go:69]	init data success	{"serviceName": "wsl"}

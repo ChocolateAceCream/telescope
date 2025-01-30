@@ -26,3 +26,6 @@ Happy Chinese New Year!
 - [x] add skeleton backend
 - [x] add db
 - [x] add docker for kafka
+
+## 2025/01/29
+- [x] add translations in backend, so all response can be translated based on user's language setting
