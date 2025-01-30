@@ -10,6 +10,7 @@ package response
 import (
 	"net/http"
 
+	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,13 +33,12 @@ const (
 	UNAUTHORIZED = 401
 )
 
-var TranslationMapper map[string]map[string]string
-
 func translate(c *gin.Context, raw string) (translated string) {
+	mapper := singleton.Translation
 	lang := c.GetHeader("Language")
-	dictionary, ok := TranslationMapper[lang]
+	dictionary, ok := mapper[lang]
 	if !ok {
-		dictionary = TranslationMapper["en"]
+		dictionary = mapper["en"]
 	}
 	translated, ok = dictionary[raw]
 	if !ok {

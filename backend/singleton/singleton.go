@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	FileSystem embed.FS
-	Viper      *viper.Viper
-	Logger     *zap.Logger
-	Config     ServerConfig
-	Redis      *redis.Client
-	DB         *sqlc.Queries
-	AWS        *AWSClient
+	FileSystem  embed.FS
+	Viper       *viper.Viper
+	Logger      *zap.Logger
+	Config      ServerConfig
+	Redis       *redis.Client
+	DB          *sqlc.Queries
+	AWS         *AWSClient
+	Translation map[string]map[string]string
 )

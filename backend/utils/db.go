@@ -38,3 +38,20 @@ func InitDB() (err error) {
 	singleton.DB = db.New(DB)
 	return
 }
+
+func InitTranslation() (err error) {
+	records, err := singleton.DB.GetAllLocales(context.Background())
+	if err != nil {
+		singleton.Logger.Error("GetAllLocales failed", zap.Error(err))
+		return
+	}
+	mapper := make(map[string]map[string]string)
+	for _, record := range records {
+		if _, ok := mapper[record.Language]; !ok {
+			mapper[record.Language] = make(map[string]string)
+		}
+		mapper[record.Language][record.RawMessage] = record.TranslatedMessage
+	}
+	singleton.Translation = mapper
+	return
+}
