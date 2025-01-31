@@ -33,4 +33,4 @@ Happy Chinese New Year!
 ## 2025/01/30
 - [x] add translations in frontend
 - [x] integrate zustand as state store
-- [] modify frontend routes
+- [x] add frontend route guard
