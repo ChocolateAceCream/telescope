@@ -29,3 +29,8 @@ Happy Chinese New Year!
 
 ## 2025/01/29
 - [x] add translations in backend, so all response can be translated based on user's language setting
+
+## 2025/01/30
+- [x] add translations in frontend
+- [x] integrate zustand as state store
+- [] modify frontend routes

@@ -6,6 +6,7 @@ interface User {
   email: string
   role: string
   language: string
+  isAuthed: boolean
 }
 
 interface UserStore {
@@ -21,6 +22,7 @@ const userStore = create<UserStore>()(
         email: '',
         role: '',
         language: 'cn',
+        isAuthed: false,
       },
       updateUser: (newUser: Partial<User>) =>
         set((state) => ({

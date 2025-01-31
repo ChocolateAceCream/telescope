@@ -14,13 +14,16 @@ import { useState } from 'react'
 import MyButton from '@/components/button'
 import { sha256 } from '@/utils/encryption'
 import { postLogin } from '@/api/auth'
-
+import userStore from '@/store/user'
+import { useNavigate } from 'react-router-dom'
 interface FormData {
   username: string
   password: string
 }
 
 const LoginPage = () => {
+  const navigate = useNavigate()
+  const updateUser = userStore((state) => state.updateUser)
   const [formData, setFormData] = useState<FormData>({
     username: '',
     password: '',
@@ -28,11 +31,18 @@ const LoginPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLDivElement>) => {
     console.log('Form data submitted:', formData, sha256(formData.password))
-    const { data: res } = await postLogin({
+    const { data: userInfo } = await postLogin({
       ...formData,
       password: sha256(formData.password),
     })
-    console.log('Login result:', res)
+    console.log('Login result:', userInfo)
+
+    updateUser({
+      isAuthed: true,
+      ...userInfo,
+    })
+
+    navigate('/')
   }
   return (
     <div className="flex items-center justify-center min-h-screen">
