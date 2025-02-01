@@ -37,8 +37,8 @@ export default {
           'Segoe UI Emoji',
           'Segoe UI Symbol',
         ],
-        baloo: ['Baloo 2', 'sans-serif'], // Register the font separately for custom use
-        chewy: ['Chewy', 'sans-serif'], // Register the font separately for custom use
+        baloo: ['"Baloo 2"', 'sans-serif'], // Register the font separately for custom use
+        chewy: ['"Chewy"', 'sans-serif'], // Register the font separately for custom use
       },
     },
   },

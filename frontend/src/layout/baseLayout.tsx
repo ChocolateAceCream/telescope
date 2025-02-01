@@ -5,11 +5,11 @@
  * @description Description: base layout
  */
 import { Outlet } from 'react-router-dom'
+import Header from './header'
 const BaseLayout = () => {
   return (
     <>
-      <div>header</div>
-      <div>navbar</div>
+      <Header />
       <main>
         <Outlet></Outlet>
       </main>

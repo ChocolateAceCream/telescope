@@ -47,8 +47,11 @@ const Home = () => {
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
       </div>
-      <h1 className="font-sans text-shadow-lg">This text uses the extended </h1>
-      <h1 className="font-inter text-shadow-xl">
+      <h1 className="font-sans text-shadow-lg ">
+        This text uses the extended{' '}
+      </h1>
+      <div className="bg-red">asdfsadf</div>
+      <h1 className="font-inter text-shadow-xl ">
         This text uses the extended{' '}
       </h1>
       <h1 className="font-chewy hover:text-shadow-xl">
