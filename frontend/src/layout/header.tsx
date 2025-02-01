@@ -8,62 +8,86 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom' // If using React Router
 import logo from '@/assets/image/logo.png'
 import Icon from '@/components/icon'
-
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
-
+  const menus = [
+    {
+      name: 'Home',
+      url: '/home',
+    },
+    {
+      name: 'About',
+      url: '/about',
+    },
+    {
+      name: 'Services',
+      url: '/services',
+    },
+    {
+      name: 'Contact',
+      url: '/contact',
+    },
+  ]
   return (
-    <div className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex items-center w-full p-4">
-      {/* Logo */}
-      <h1 className="text-2xl font-bold">
-        <Link to="/">
-          <img src={logo} alt="logo" className="h-[70px] w-auto" />
-        </Link>
-      </h1>
-
-      {/* Desktop Navigation */}
-      <nav className="md:hidden space-x-6">
-        <Link to="/home" className="hover:text-gray-200">
-          Home
-        </Link>
-        <Link to="/about" className="hover:text-gray-200">
-          About
-        </Link>
-        <Link to="/services" className="hover:text-gray-200">
-          Services
-        </Link>
-        <Link to="/contact" className="hover:text-gray-200">
-          Contact
-        </Link>
-      </nav>
-
-      {/* Mobile Menu Button */}
-      <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? (
-          <Icon name="close" className="close" />
-        ) : (
+    <>
+      <div className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex items-center w-full p-4">
+        {/* Mobile Menu Button */}
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
           <Icon name="menu" className="menu" />
-        )}
-      </button>
+        </button>
 
-      {/* Mobile Dropdown Menu */}
-      {isOpen && (
-        <nav className="md:hidden bg-blue-700 mt-2 p-4 space-y-2">
-          <Link to="/home" className="block hover:text-gray-200">
-            Home
+        {/* Mobile Dropdown Menu */}
+        {isOpen && (
+          <div
+            className={`fixed inset-0  flex justify-center
+          transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+          transition-transform duration-300 ease-in-out`}
+          >
+            {/* 🔹 Close Button */}
+            <button
+              className="absolute top-5 right-5 text-white text-3xl focus:outline-none"
+              onClick={() => setIsOpen(false)}
+            >
+              <Icon name="close" />
+            </button>
+
+            {/* 🔹 Menu Items */}
+            <nav className=" text-2xl bg-white space-y-6 text-center mt-20 w-full bg-opacity-100 px-8">
+              {menus.map((menu) => (
+                <Link
+                  to={menu.url}
+                  key={menu.name}
+                  className="font-chewy block hover:text-gray-400 border-b-2 border-shadow h-16 flex items-center justify-center relative px-4"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {menu.name}
+                  <Icon name="rightArrow" className="absolute right-0" />
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+        {/* Logo */}
+        <h1 className="text-2xl font-bold">
+          <Link to="/">
+            <img src={logo} alt="logo" className="h-[70px] w-auto" />
           </Link>
-          <Link to="/about" className="block hover:text-gray-200">
-            About
-          </Link>
-          <Link to="/services" className="block hover:text-gray-200">
-            Services
-          </Link>
-          <Link to="/contact" className="block hover:text-gray-200">
-            Contact
-          </Link>
+        </h1>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex space-x-12">
+          {menus.map((menu) => (
+            <Link
+              to={menu.url}
+              key={menu.name}
+              className="font-chewy hover:text-concrete"
+            >
+              {menu.name}
+            </Link>
+          ))}
         </nav>
-      )}
-    </div>
+      </div>
+    </>
   )
 }
 

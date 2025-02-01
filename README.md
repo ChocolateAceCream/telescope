@@ -34,3 +34,11 @@ Happy Chinese New Year!
 - [x] add translations in frontend
 - [x] integrate zustand as state store
 - [x] add frontend route guard
+
+## 2025/01/31
+- [x] config tailwind
+tailwind 4 separated postcss to its own package, and old setup is not working anymore. After hours of struggle with v4, finally I switch back to tailwind v3 and everything is back to normal.
+
+## 2025/02/01
+- [x] add 404 page
+- [x] add header nav bar

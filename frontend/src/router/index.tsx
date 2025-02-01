@@ -10,6 +10,8 @@ import Layout from '@/layout/baseLayout'
 import { SSEProvider } from '@/hooks/useSSE'
 import userStore from '@/store/user'
 import { useEffect } from 'react'
+import NotFound from '@/views/NotFound'
+
 const ProtectedRoute = () => {
   return (
     // <SSEProvider url="/backend/api/sse/subscribe">
@@ -52,6 +54,7 @@ const router = createBrowserRouter([
     path: '/oauth-success',
     element: <OAuthResult />,
   },
+  { path: '*', element: <NotFound /> }, // Catch-all route for 404 pages
 ])
 
 export default router

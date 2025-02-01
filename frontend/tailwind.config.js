@@ -13,9 +13,11 @@ export default {
         primary: '#ffb74d',
         secondary: '#ff9800',
         'lite-blue': '#C1E1E7',
-        shadow: '#919191',
+        shadow: '#e5e1e1',
         'lite-pink': '#ea8685',
         'lite-orange': '#FEE5CB',
+        'concrete': '#95a5a6',
+        'lite-white': '#ecf0f1',
 
       },
       height: {
