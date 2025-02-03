@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   useNavigate,
+  Navigate,
 } from 'react-router-dom'
 import Home from '@/views/home'
 import Login from '@/views/auth/login'
@@ -11,6 +12,7 @@ import { SSEProvider } from '@/hooks/useSSE'
 import userStore from '@/store/user'
 import { useEffect } from 'react'
 import NotFound from '@/views/NotFound'
+import Demo from '@/views/Demo'
 
 const ProtectedRoute = () => {
   return (
@@ -41,7 +43,9 @@ const router = createBrowserRouter([
       </AuthGuard>
     ),
     children: [
-      { path: '/', element: <Home /> },
+      { index: true, element: <Navigate to="/home" replace /> },
+      { path: '/home', element: <Home /> },
+      { path: '/demo', element: <Demo /> },
       // { path: 'about', element: <About /> },
       // other routes...
     ],

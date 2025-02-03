@@ -13,7 +13,7 @@ const BaseLayout = () => {
       <main>
         <Outlet></Outlet>
       </main>
-      <div>footer</div>
+      {/* <div>footer</div> */}
     </>
   )
 }
