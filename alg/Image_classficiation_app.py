@@ -1,98 +1,75 @@
-from requests.models import MissingSchema
-import streamlit as st
+import json
 import cv2
 import numpy as np
-from PIL import Image, UnidentifiedImageError
-import requests
-from io import BytesIO
+import boto3
+import tempfile
+import urllib.request
 
-st.image("LandingPlace_logo.png", caption="LandingPlace")
-# Create application title and file uploader widget.
-st.title("OpenCV Deep Learning based Image Classification")
+# S3 Client
+s3_client = boto3.client("s3")
 
+# Model paths in /tmp (Lambda only allows write access here)
+MODEL_PATH = "/tmp/DenseNet_121.caffemodel"
+PROTO_PATH = "/tmp/DenseNet_121.prototxt"
 
-@st.cache_resource()
-def load_model():
-    """Loads the DNN model."""
-
-    #C:\\Users\\lijid\\Documents\\OpenCV_Courses\\Master_OpenCV_with_Python\\Code\\module13-introduction-to-deep-learning-with-opencv\\Applications\\
-    # Read the ImageNet class names.
-    with open("classification_classes_animals.txt", "r") as f:
-        image_net_names = f.read().split("\n")
-
-    # Final class names, picking just the first name if multiple in the class.
-    class_names = [name.split(",")[0] for name in image_net_names]
-
-    # Load the neural network model.
-    model = cv2.dnn.readNet(model="DenseNet_121.caffemodel", config="DenseNet_121.prototxt", framework="Caffe")
-    return model, class_names
+# S3 Bucket where model files are stored
+MODEL_BUCKET = "telescope-develop"
+CAFFEMODEL_KEY = "DenseNet_121.caffemodel"
+PROTOTXT_KEY = "DenseNet_121.prototxt"
 
 
-def classify(model, image, class_names):
-    """Performs inference and returns class name with highest confidence."""
+def download_model():
+    """Download model files from S3 to /tmp if not already present."""
+    for key, path in [(CAFFEMODEL_KEY, MODEL_PATH), (PROTOTXT_KEY, PROTO_PATH)]:
+        try:
+            s3_client.download_file(MODEL_BUCKET, key, path)
+        except Exception as e:
+            print(f"Error downloading model: {e}")
+            raise
 
-    # Remove alpha channel if found.
-    if image.shape[2] == 4:
-        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
 
-    # Create blob from image using values specified by the model:
-    # https://github.com/shicai/DenseNet-Caffe
-    blob = cv2.dnn.blobFromImage(image=image, scalefactor=0.017, size=(224, 224), mean=(104, 117, 123))
+def classify_image(image_url):
+    """Download image from S3 URL, classify it, and return results."""
 
-    # Set the input blob for the neural network and pass through network.
+    # Download the image to /tmp
+    temp_image_path = "/tmp/input.jpg"
+    urllib.request.urlretrieve(image_url, temp_image_path)
+
+    # Load model
+    download_model()
+    model = cv2.dnn.readNet(MODEL_PATH, PROTO_PATH)
+
+    # Read Image
+    image = cv2.imread(temp_image_path)
+    blob = cv2.dnn.blobFromImage(image, scalefactor=0.017, size=(224, 224), mean=(104, 117, 123))
+
     model.setInput(blob)
     outputs = model.forward()
 
-    final_outputs = outputs[0]
-    # Make all the outputs 1D.
-    final_outputs = final_outputs.reshape(1000, 1)
-    # get the class label
-    label_id = np.argmax(final_outputs)
-    # Convert the output scores to softmax probabilities.
-    probs = np.exp(final_outputs) / np.sum(np.exp(final_outputs))
-    # Get the final highest probability.
-    final_prob = np.max(probs) * 100.0
-    # Map the max confidence to the class label names.
-    out_name = class_names[label_id]
-    out_text = f"Class: {out_name}, Confidence: {final_prob:.1f}%"
-    return out_text
+    # Process results
+    label_id = int(np.argmax(outputs[0]))  # Convert to int for JSON compatibility
+    confidence = float(np.max(outputs[0])) * 100.0  # Convert to float for JSON
+
+    return {"class_id": label_id, "confidence": confidence}
 
 
-def header(text):
-    st.markdown(
-        '<p style="background-color:#0066cc;color:#33ff33;font-size:24px;'
-        f'border-radius:2%;" align="center">{text}</p>',
-        unsafe_allow_html=True,
-    )
-
-
-net, class_names = load_model()
-
-img_file_buffer = st.file_uploader("Choose a file or Camera", type=["jpg", "jpeg", "png"])
-st.text("OR")
-url = st.text_input("Enter URL")
-
-if img_file_buffer is not None:
-    # Read the file and convert it to opencv Image.
-    image = np.array(Image.open(img_file_buffer))
-    st.image(image)
-
-    # Call the classification model to detect faces in the image.
-    detections = classify(net, image, class_names)
-    header(detections)
-
-elif url != "":
+def lambda_handler(event, context):
+    """AWS Lambda Entry Point"""
     try:
-        response = requests.get(url)
-        image = np.array(Image.open(BytesIO(response.content)))
-        st.image(image)
+        # Get the S3 image URL from the input event
+        body = json.loads(event["body"])
+        image_url = body.get("image_url")
 
-        # Call the classification model to detect faces in the image.
-        detections = classify(net, image, class_names)
-        header(detections)
-    except MissingSchema as err:
-        st.header("Invalid URL, Try Again!")
-        print(err)
-    except UnidentifiedImageError as err:
-        st.header("URL has no Image, Try Again!")
-        print(err)
+        if not image_url:
+            return {"statusCode": 400, "body": json.dumps({"error": "Missing image_url"})}
+
+        # Run classification
+        result = classify_image(image_url)
+
+        return {
+            "statusCode": 200,
+            "body": json.dumps(result)
+        }
+
+    except Exception as e:
+        return {"statusCode": 500, "body": json.dumps({"error": str(e)})}
