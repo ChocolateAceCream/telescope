@@ -1,5 +1,8 @@
 # telescope
 
+## Architecture
+![Architecture](architecture.drawio.png)
+
 ## Frontend
 react + tailwind + typescript + vite
 
