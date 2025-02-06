@@ -12,6 +12,22 @@ import (
 
 type AwsApi struct{}
 
+func (a *AwsApi) Classify(c *gin.Context) {
+	var req request.ClassifyRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		singleton.Logger.Error("Failed to bind JSON", zap.Error(err))
+		response.FailWithMessage(c, "error.missing.params")
+		return
+	}
+
+	resp, err := awsService.ClassifyImage(c, req)
+	if err != nil {
+		response.FailWithMessage(c, err.Error())
+		return
+	}
+	response.OkWithFullDetails(c, resp, "success")
+}
+
 func (a *AwsApi) Upload(c *gin.Context) {
 	var req request.S3PresignedUrlRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

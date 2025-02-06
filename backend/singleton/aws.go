@@ -10,8 +10,12 @@ type AWSClient struct {
 type AWSConfig struct {
 	S3         S3Config         `mapstructure:"s3" json:"s3" yaml:"s3"`
 	CloudFront CloudFrontConfig `mapstructure:"cloud-front" json:"cloud_front" yaml:"cloud-front"`
+	Lambda     LambdaConfig     `mapstructure:"lambda" json:"lambda" yaml:"lambda"`
 }
 
+type LambdaConfig struct {
+	Url string `mapstructure:"url" json:"url" yaml:"url"`
+}
 type S3Config struct {
 	Bucket                 string `mapstructure:"bucket" json:"bucket" yaml:"bucket"`
 	PresignedUrlExpiration int64  `mapstructure:"presigned-url-expiration" json:"presigned_url_expiration" yaml:"presigned-url-expiration"`

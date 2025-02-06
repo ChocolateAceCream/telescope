@@ -47,6 +47,7 @@ func RouteLoader(r *gin.Engine) {
 	aws := PrivateGroup.Group("/aws")
 	{
 		aws.POST("/upload", awsApi.Upload)
+		aws.POST("/classify", awsApi.Classify)
 		aws.GET("/download", awsApi.Download)
 	}
 }

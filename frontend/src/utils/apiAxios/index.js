@@ -86,6 +86,11 @@ apiAxios.interceptors.response.use(
     }
     // 请求成功
     activeRequest--
+    // ✅ Detect if this is an S3 pre-signed URL upload
+    if (res.config.url.includes("telescope-develop.s3.us-east-1.amazonaws.com") ){
+      console.log("S3 Upload Success:", res.config.url);
+      return Promise.resolve(res);
+    }
     if (res.data.error_code !== 0) {
       showNotification({
         type: 'error',

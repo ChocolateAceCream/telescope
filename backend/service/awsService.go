@@ -1,16 +1,21 @@
 package service
 
 import (
+	"bytes"
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
 	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
+	"github.com/ChocolateAceCream/telescope/backend/model/request"
+	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -18,6 +23,23 @@ import (
 )
 
 type AwsService struct{}
+
+func (a *AwsService) ClassifyImage(c *gin.Context, req request.ClassifyRequest) (resp response.ClassifyResponse, err error) {
+	lambdaUrl := singleton.Config.AWS.Lambda.Url
+	jsonData, err := json.Marshal(req)
+	httpResp, err := http.Post(
+		lambdaUrl,
+		"application/json",
+		bytes.NewBuffer(jsonData),
+	)
+	if err != nil {
+		return
+	}
+	defer httpResp.Body.Close()
+
+	err = json.NewDecoder(httpResp.Body).Decode(&resp)
+	return
+}
 
 func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user db.AUser, fileName string) (url string, err error) {
 	path := user.Username + "/" + fileName
