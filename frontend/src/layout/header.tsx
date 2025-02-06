@@ -39,7 +39,7 @@ const Header = () => {
         {/* Mobile Dropdown Menu */}
         {isOpen && (
           <div
-            className={`fixed inset-0  flex justify-center
+            className={`z-50 fixed inset-0  flex justify-center
           transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}
           transition-transform duration-300 ease-in-out`}
           >
