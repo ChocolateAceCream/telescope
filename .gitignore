@@ -1,3 +1,7 @@
 backend/config.yaml
 backend/log/server.log
 docker/pgsql/data
+frontend/.env.production
+frontend/.env.development
+frontend/dist
+backend/main

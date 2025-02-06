@@ -68,4 +68,8 @@ Lessons learned:
 3. S3 presigned url can let frontend directly upload files to S3. While for lambda function, no such things, so better call lambda from backend or use lambda trigger. It's dangerous to expose a lambda function url to the public
 
 ## 2025/02/05
-- [x] whole process worked
+- [x] whole process worked locally
+TODO:
+- [] fix frontend route reload nginx bug
+- [] fix frontend menu css
+- [] add ssl
