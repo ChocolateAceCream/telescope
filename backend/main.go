@@ -57,7 +57,7 @@ func Init() (r *gin.Engine, err error) {
 	// 	return
 	// }
 
-	// singleton.AWS = utils.NewAWS(utils.WithS3)
+	singleton.AWS = utils.NewAWS(utils.WithS3)
 
 	r = gin.Default()
 	router.RouterInit(r)

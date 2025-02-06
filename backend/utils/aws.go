@@ -20,7 +20,9 @@ func NewAWS(opts ...Options) *singleton.AWSClient {
 }
 
 func WithS3(aws *singleton.AWSClient) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+
+	// TODO: move region to config
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {
 		singleton.Logger.Error("failed to load AWS config", zap.Error(err))
 	}

@@ -46,5 +46,5 @@ func SessionHandler(c *gin.Context) {
 	}
 	c.Set(config.Key, newSession)
 	jsonStr, _ := json.Marshal(newSession)
-	singleton.Redis.Set(c, UUID, jsonStr, time.Duration(config.ExpireTime))
+	singleton.Redis.Set(c, UUID, jsonStr, time.Duration(config.ExpireTime)*time.Second)
 }
