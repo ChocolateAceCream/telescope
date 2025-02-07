@@ -1,0 +1,85 @@
+d name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - release  # Change this if your default branch is different
+
+jobs:
+  frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20  # Adjust version as needed
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: frontend  # Change this if your frontend is in another folder
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: Upload Frontend Files to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist/*"
+          target: "/home/${{ secrets.SERVER_USER }}/temp_frontend/"
+
+      - name: Move Files to `/var/www/` with sudo
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /var/www/html  # Remove old 'html' folder
+            sudo mv /home/${{ secrets.SERVER_USER }}/temp_frontend /var/www/html  # Move and rename folder
+            sudo chown -R www-data:www-data /var/www/html  # Set correct permissions
+            sudo chmod -R 755 /var/www/html  # Ensure proper access
+
+  backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.23
+
+      - name: Build Backend
+        run: |
+          cd backend
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./main -v ./
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "backend/main"
+          target: "/home/${{ secrets.SERVER_USER }}/telescope/backend/main"
+
+      - name: Restart Backend Service
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart backend.service  # Ensure you have a systemd service for your backend
