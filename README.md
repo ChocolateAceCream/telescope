@@ -54,8 +54,7 @@ You have to build you own layer which contains opencv and numpy if your lambda f
 
 TODO:
 - [x] set up access control for s3 and lambda. One approach is use pre-signed url for frontend to upload image to s3.
-- [] SSE
-- [] job queue
+
 
 ## 2025/02/04
 - [x] setup aws s3 presigned url
@@ -69,7 +68,15 @@ Lessons learned:
 
 ## 2025/02/05
 - [x] whole process worked locally
-TODO:
-- [] fix frontend route reload nginx bug
-- [] fix frontend menu css
+
+
+## 2025/02/06
+- [x] fix frontend route reload nginx bug
+- [x] fix frontend menu css
+- [x] fix session
+
+## TODO
+- [] CI/CD
 - [] add ssl
+- [] SSE
+- [] job queue

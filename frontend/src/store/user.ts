@@ -12,6 +12,7 @@ interface User {
 interface UserStore {
   user: User
   updateUser: (newUser: Partial<User>) => void
+  logout: () => void
 }
 
 const userStore = create<UserStore>()(
@@ -24,13 +25,25 @@ const userStore = create<UserStore>()(
         language: 'cn',
         isAuthed: false,
       },
-      updateUser: (newUser: Partial<User>) =>
+      updateUser: (newUser: Partial<User>) => {
         set((state) => ({
           user: {
             ...state.user, // Keep old values
             ...newUser, // Override with new values
           },
-        })),
+        }))
+      },
+      logout: () => {
+        set((state) => ({
+          user: {
+            name: '',
+            email: '',
+            role: '',
+            language: state.user.language,
+            isAuthed: false,
+          },
+        }))
+      },
     }),
     {
       name: 'user-storage',

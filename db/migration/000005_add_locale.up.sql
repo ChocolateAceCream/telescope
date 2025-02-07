@@ -15,8 +15,10 @@ UPDATE ON "public"."locale" FOR EACH ROW EXECUTE FUNCTION updated_at_autocomplet
 
 insert into "public"."locale" (LANGUAGE, raw_message, translated_message) values
 ('en', 'error.missing.params', 'Missing required parameters'),
-('en', 'error.failed.operation', 'Operation failed'),
-('en', 'error.invalid.credentials', 'Invalid credentials'),
 ('cn', 'error.missing.params', '缺少参数'),
+('en', 'error.failed.operation', 'Operation failed'),
 ('cn', 'error.failed.operation', '操作失败'),
-('cn', 'error.invalid.credentials', '身份验证失败');
+('en', 'error.invalid.credentials', 'Invalid credentials'),
+('cn', 'error.invalid.credentials', '身份验证失败'),
+('en', 'error.session.expired', 'You have been signed out'),
+('cn', 'error.session.expired', '身份信息已过期，请重新登录');

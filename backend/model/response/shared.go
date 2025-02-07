@@ -73,5 +73,4 @@ func FailWithFullDetails(c *gin.Context, data interface{}, msg string) {
 
 func FailWithUnauthorized(c *gin.Context, msg string) {
 	ResponseGenerator(c, UNAUTHORIZED, map[string]interface{}{}, msg)
-
 }

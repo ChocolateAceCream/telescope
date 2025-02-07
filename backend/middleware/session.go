@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/ChocolateAceCream/telescope/backend/utils"
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,10 @@ func SessionHandler(c *gin.Context) {
 			c.Set(config.Key, session)
 			return
 		}
+		// session expired, return unauthorized
+		response.FailWithUnauthorized(c, "error.session.expired")
+		c.Abort()
+		return
 	}
 	UUID := uuid.New().String()
 	domain := c.Request.Host

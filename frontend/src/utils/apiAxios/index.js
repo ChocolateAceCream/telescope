@@ -2,11 +2,12 @@ import axios from 'axios'
 import supportCancelToken from './cancelToken'
 import { addSignature } from './signature'
 import showNotification from '@/components/notification'
-import userStore from '@/store/user'
-// import { logout } from '@/shared/hooks/index'
 import NProgress from 'nprogress'
 import qs from 'qs'
 
+import userStore from '@/store/user'
+
+const logout = userStore.getState().logout; // Zustand logout function
 const apiAxios = new Proxy(
   axios.create({
     // https://cn.vitejs.dev/guide/env-and-mode.html
@@ -100,8 +101,9 @@ apiAxios.interceptors.response.use(
       // unauthorized, logout current user
       if (res.data.error_code === 401) {
         if (!logoutFlag) {
-          // logout()
           logoutFlag = true
+          logout()
+          window.location.href = "/login";
         }
         if (activeRequest === 0) {
           // last request
