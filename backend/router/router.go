@@ -7,7 +7,7 @@ import (
 )
 
 func RouterInit(r *gin.Engine) {
-	// r.Use(middleware.CORSMiddleware())
+	r.Use(middleware.CORSMiddleware())
 	RouteLoader(r)
 }
 

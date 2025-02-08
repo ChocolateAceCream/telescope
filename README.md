@@ -74,9 +74,11 @@ Lessons learned:
 - [x] fix frontend route reload nginx bug
 - [x] fix frontend menu css
 - [x] fix session
+- [x] add ssl
 
 ## TODO
-- [] CI/CD
-- [] add ssl
+- [x] CI/CD
 - [] SSE
 - [] job queue
+- [] switch camera
+- [] fix mobile css issue
