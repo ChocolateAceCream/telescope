@@ -76,9 +76,18 @@ Lessons learned:
 - [x] fix session
 - [x] add ssl
 
+## 2025/02/07
+- [x] CI/CD using github action
+Since my aws ec2 only have 1GB RAM, so I'm not using docker for deployment. Also, for frontend, since I need to obtain/renew SSL using certbot, I have to install native nginx instead of docker.
+
+## 2025/02/08
+- [x] fix mobile css issue
+- [x] add auth middleware
+
+## 2025/02/09
+
 ## TODO
-- [x] CI/CD
 - [] SSE
 - [] job queue
-- [] switch camera
-- [] fix mobile css issue
+- [] flip camera
+- [] sign up, google login, logout

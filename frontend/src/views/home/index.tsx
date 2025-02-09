@@ -5,7 +5,6 @@
  * @description home page
  */
 import { useState, useRef } from 'react'
-import Icon from '@/components/icon'
 import showNotification from '@/components/notification'
 import { postLogin } from '@/api/auth'
 import './index.css'

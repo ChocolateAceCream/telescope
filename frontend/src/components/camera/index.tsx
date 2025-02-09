@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import MyButton from '@/components/button'
 import { on } from 'events'
+import Icon from '@/components/icon'
 
 interface CameraProps {
   onCapture: (imageUrl: string, blob: Blob) => void
@@ -16,12 +17,13 @@ const CameraCapture: React.FC<CameraProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isCameraOn, setIsCameraOn] = useState(isOpen)
   const [stream, setStream] = useState<MediaStream | null>(null)
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user')
 
   // Start the camera
-  const startCamera = async () => {
+  const startCamera = async (mode: 'user' | 'environment') => {
     try {
       const newStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: { facingMode: mode },
       })
       if (videoRef.current) {
         videoRef.current.srcObject = newStream
@@ -47,7 +49,7 @@ const CameraCapture: React.FC<CameraProps> = ({
   // 🔹 Sync internal state with `defaultActive` changes
   useEffect(() => {
     if (isOpen) {
-      startCamera()
+      startCamera(facingMode)
     } else {
       stopCamera()
     }
@@ -57,10 +59,15 @@ const CameraCapture: React.FC<CameraProps> = ({
     if (isCameraOn) {
       stopCamera()
     } else {
-      startCamera()
+      startCamera(facingMode)
     }
   }
 
+  const flipCamera = () => {
+    const newMode = facingMode === 'user' ? 'environment' : 'user'
+    setFacingMode(newMode)
+    startCamera(newMode)
+  }
   const captureImage = () => {
     const video = videoRef.current
     const canvas = canvasRef.current
@@ -91,7 +98,7 @@ const CameraCapture: React.FC<CameraProps> = ({
           ref={videoRef}
           autoPlay
           playsInline
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full z-10"
           style={{ objectFit: 'cover', background: '#000' }}
         />
       </Box>
@@ -115,6 +122,9 @@ const CameraCapture: React.FC<CameraProps> = ({
           disabled={!isCameraOn}
         >
           Capture
+        </MyButton>
+        <MyButton variant="contained" color="secondary" onClick={flipCamera}>
+          <Icon name="flip" />
         </MyButton>
       </Box>
     </>
