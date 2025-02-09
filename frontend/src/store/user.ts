@@ -34,6 +34,13 @@ const userStore = create<UserStore>()(
         }))
       },
       logout: () => {
+        // 🔹 Delete the specific `telescope_session` cookie
+        console.log('Logging out...')
+        document.cookie.split(';').forEach((cookie) => {
+          const name = cookie.split('=')[0].trim()
+          document.cookie = `${name}=; Path=/; Domain=${window.location.hostname}; Max-Age=0`
+        })
+
         set((state) => ({
           user: {
             name: '',

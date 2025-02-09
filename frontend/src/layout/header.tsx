@@ -29,65 +29,63 @@ const Header = () => {
     },
   ]
   return (
-    <>
-      <div className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex items-center w-full p-4">
-        {/* Mobile Menu Button */}
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          <Icon name="menu" className="menu" />
-        </button>
+    <div className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex items-center w-full px-4">
+      {/* Mobile Menu Button */}
+      <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+        <Icon name="menu" className="menu" />
+      </button>
 
-        {/* Mobile Dropdown Menu */}
-        {isOpen && (
-          <div
-            className={`z-50 fixed inset-0  flex justify-center
+      {/* Mobile Dropdown Menu */}
+      {isOpen && (
+        <div
+          className={`z-50 fixed inset-0  flex justify-center
           transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}
           transition-transform duration-300 ease-in-out`}
+        >
+          {/* 🔹 Close Button */}
+          <button
+            className="absolute top-5 right-5 text-white text-3xl focus:outline-none"
+            onClick={() => setIsOpen(false)}
           >
-            {/* 🔹 Close Button */}
-            <button
-              className="absolute top-5 right-5 text-white text-3xl focus:outline-none"
-              onClick={() => setIsOpen(false)}
-            >
-              <Icon name="close" />
-            </button>
+            <Icon name="close" />
+          </button>
 
-            {/* 🔹 Menu Items */}
-            <nav className=" text-2xl bg-white space-y-6 text-center mt-20 w-full bg-opacity-100 px-8">
-              {menus.map((menu) => (
-                <Link
-                  to={menu.url}
-                  key={menu.name}
-                  className="font-chewy block hover:text-gray-400 border-b-2 border-shadow h-16 flex items-center justify-center relative px-4"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {menu.name}
-                  <Icon name="rightArrow" className="absolute right-0" />
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
-        {/* Logo */}
-        <h1 className="text-2xl font-bold">
-          <Link to="/">
-            <img src={logo} alt="logo" className="h-[70px] w-auto" />
+          {/* 🔹 Menu Items */}
+          <nav className=" text-2xl bg-white space-y-6 text-center mt-16 w-full bg-opacity-100 px-8">
+            {menus.map((menu) => (
+              <Link
+                to={menu.url}
+                key={menu.name}
+                className="font-chewy block hover:text-gray-400 border-b-2 border-shadow h-16 flex items-center justify-center relative px-4"
+                onClick={() => setIsOpen(false)}
+              >
+                {menu.name}
+                <Icon name="rightArrow" className="absolute right-0" />
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+      {/* Logo */}
+      <h1 className="text-2xl font-bold">
+        <Link to="/">
+          <img src={logo} alt="logo" className="h-[4rem] w-auto" />
+        </Link>
+      </h1>
+
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex space-x-12">
+        {menus.map((menu) => (
+          <Link
+            to={menu.url}
+            key={menu.name}
+            className="font-chewy hover:text-concrete"
+          >
+            {menu.name}
           </Link>
-        </h1>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-12">
-          {menus.map((menu) => (
-            <Link
-              to={menu.url}
-              key={menu.name}
-              className="font-chewy hover:text-concrete"
-            >
-              {menu.name}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </>
+        ))}
+      </nav>
+    </div>
   )
 }
 

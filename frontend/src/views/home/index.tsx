@@ -19,10 +19,17 @@ const Home = () => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [className, setClassName] = useState<string | null>(null)
   const [confidence, setConfidence] = useState<number | null>(null)
+  const [isCameraActive, setIsCameraActive] = useState(false)
 
   const handleImageCapture = (imageUrl: string, blob: Blob) => {
     setCapturedImage(imageUrl)
+    setIsCameraActive(false)
     S3Uploader(imageUrl, blob)
+  }
+
+  const handleRetakePhoto = () => {
+    setCapturedImage(null) // ✅ Reset image
+    setIsCameraActive(true) // ✅ Reopen camera
   }
 
   const S3Uploader = async (url: string, blob: Blob) => {
@@ -43,15 +50,17 @@ const Home = () => {
 
   return (
     <>
-      <Box className="flex flex-col items-center space-y-4 p-4">
-        <Camera onCapture={handleImageCapture} />
-        {/* Display Captured Image */}
-        {capturedImage && (
-          <Box className="mt-4">
+      <Box className="flex flex-col items-center space-y-4 sm:w-[25rem] w-[22rem]  px-2 mx-auto mt-4">
+        {/* Show Camera if no image is captured */}
+        {!capturedImage ? (
+          <Camera onCapture={handleImageCapture} isOpen={isCameraActive} />
+        ) : (
+          <Box className="w-full">
+            {/* Display Captured Image */}
             <img
               src={capturedImage}
               alt="Captured"
-              className="w-[375px] md:w-[400px] h-[250px] border rounded-lg object-cover"
+              className="w-full h-[15rem] overflow-hidden border rounded-lg relative"
             />
 
             {/* 🔹 Name & Confidence Score */}
@@ -60,6 +69,14 @@ const Home = () => {
                 Detected: {className} ({confidence.toFixed(1)}%)
               </p>
             )}
+
+            {/* 🔹 Retake Button */}
+            <button
+              onClick={handleRetakePhoto} // Reset image
+              className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            >
+              Retake Photo
+            </button>
           </Box>
         )}
       </Box>

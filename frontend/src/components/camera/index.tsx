@@ -1,16 +1,20 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import MyButton from '@/components/button'
 import { on } from 'events'
 
 interface CameraProps {
   onCapture: (imageUrl: string, blob: Blob) => void
+  isOpen?: boolean
 }
 
-const CameraCapture: React.FC<CameraProps> = ({ onCapture }) => {
+const CameraCapture: React.FC<CameraProps> = ({
+  onCapture,
+  isOpen = false,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isCameraOn, setIsCameraOn] = useState(false)
+  const [isCameraOn, setIsCameraOn] = useState(isOpen)
   const [stream, setStream] = useState<MediaStream | null>(null)
 
   // Start the camera
@@ -39,6 +43,15 @@ const CameraCapture: React.FC<CameraProps> = ({ onCapture }) => {
     }
     setIsCameraOn(false)
   }
+
+  // 🔹 Sync internal state with `defaultActive` changes
+  useEffect(() => {
+    if (isOpen) {
+      startCamera()
+    } else {
+      stopCamera()
+    }
+  }, [isOpen])
 
   const toggleCamera = () => {
     if (isCameraOn) {
@@ -73,7 +86,7 @@ const CameraCapture: React.FC<CameraProps> = ({ onCapture }) => {
   return (
     <>
       {/* Video Box with Responsive Fixed Size */}
-      <Box className="w-[375px] md:w-[400px] h-[250px] overflow-hidden border rounded-lg relative">
+      <Box className="w-full h-[15rem] overflow-hidden border rounded-lg relative">
         <video
           ref={videoRef}
           autoPlay

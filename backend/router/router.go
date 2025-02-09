@@ -36,6 +36,7 @@ func RouteLoader(r *gin.Engine) {
 	}
 
 	PrivateGroup := v1.Group("")
+	PrivateGroup.Use(middleware.AuthMiddleware())
 	sse := PrivateGroup.Group("/sse")
 	{
 		sse.GET("/subscribe", middleware.SSEMiddleware(), sseApi.Subscriber)
