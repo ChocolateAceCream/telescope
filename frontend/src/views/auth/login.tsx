@@ -46,7 +46,7 @@ const LoginPage = () => {
   }
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <Card className="max-w-sm p-8 shadow-lg rounded-3xl">
+      <Card className="max-w-sm m-4 p-4 shadow-lg rounded-2xl !important ">
         <CardContent>
           <Typography
             variant="h4"

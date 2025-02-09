@@ -50,7 +50,7 @@ const Home = () => {
 
   return (
     <>
-      <Box className="flex flex-col items-center space-y-4 sm:w-[25rem] w-[22rem]  px-2 mx-auto mt-4">
+      <Box className="flex flex-col items-center space-y-4 sm:w-[25rem] w-[21rem]  px-2 mx-auto mt-4">
         {/* Show Camera if no image is captured */}
         {!capturedImage ? (
           <Camera onCapture={handleImageCapture} isOpen={isCameraActive} />

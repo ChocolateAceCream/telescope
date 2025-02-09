@@ -16,7 +16,7 @@ const BaseLayout = () => {
       </header>
 
       {/* 🔹 Scrollable Main Content */}
-      <main className="flex-1 mt-[4rem] overflow-auto p-4">
+      <main className="flex-1 mt-[4rem] overflow-y-auto p-4">
         <Outlet />
       </main>
 
