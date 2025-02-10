@@ -44,24 +44,26 @@ const CameraCapture: React.FC<CameraProps> = ({
     if (videoRef.current) {
       videoRef.current.srcObject = null
     }
-    setIsCameraOn(false)
   }
 
   // 🔹 Sync internal state with `defaultActive` changes
   useEffect(() => {
-    if (isOpen) {
-      startCamera(facingMode)
-    } else {
-      stopCamera()
-    }
+    console.log('isOpen:', isOpen)
+    setIsCameraOn(isOpen)
   }, [isOpen])
 
-  const toggleCamera = () => {
+  // 🔹 Sync internal state with `defaultActive` changes
+  useEffect(() => {
     if (isCameraOn) {
       stopCamera()
-    } else {
       startCamera(facingMode)
+    } else {
+      stopCamera()
     }
+  }, [isCameraOn])
+
+  const toggleCamera = () => {
+    setIsCameraOn((prev) => !prev)
   }
 
   const flipCamera = () => {
@@ -71,6 +73,7 @@ const CameraCapture: React.FC<CameraProps> = ({
   // 🔹 Use `useEffect` to restart the camera when `facingMode` changes
   useEffect(() => {
     if (isCameraOn) {
+      stopCamera()
       startCamera(facingMode)
     }
   }, [facingMode])
