@@ -21,6 +21,7 @@ const CameraCapture: React.FC<CameraProps> = ({
 
   // Start the camera
   const startCamera = async (mode: 'user' | 'environment') => {
+    console.log('-------mode------------', mode)
     try {
       const newStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: mode },
@@ -64,10 +65,16 @@ const CameraCapture: React.FC<CameraProps> = ({
   }
 
   const flipCamera = () => {
-    const newMode = facingMode === 'user' ? 'environment' : 'user'
-    setFacingMode(newMode)
-    startCamera(newMode)
+    setFacingMode((prevMode) => (prevMode === 'user' ? 'environment' : 'user'))
   }
+
+  // 🔹 Use `useEffect` to restart the camera when `facingMode` changes
+  useEffect(() => {
+    if (isCameraOn) {
+      startCamera(facingMode)
+    }
+  }, [facingMode])
+
   const captureImage = () => {
     const video = videoRef.current
     const canvas = canvasRef.current

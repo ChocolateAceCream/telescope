@@ -1,53 +1,54 @@
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
-import svgr from "vite-plugin-svgr";
-import { visualizer } from "rollup-plugin-visualizer";
-import Banner from "vite-plugin-banner";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
-import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
+import { visualizer } from 'rollup-plugin-visualizer'
+import Banner from 'vite-plugin-banner'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 function pathResolve(...args: string[]) {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  return resolve(__dirname, "./", ...args);
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = dirname(__filename)
+  return resolve(__dirname, './', ...args)
   // return resolve(__dirname, '.', ...args)
 }
 // https://vitejs.dev/config/
 export default defineConfig((params) => {
-  const { command, mode } = params;
-  const ENV = loadEnv(mode, process.cwd());
-  const timestamp = Date.now();
+  const { command, mode } = params
+  const ENV = loadEnv(mode, process.cwd())
+  const timestamp = Date.now()
   console.info(
     `--- running mode: ${mode}, command: ${command}, ENV: ${JSON.stringify(
       ENV
     )} ---`
-  );
-  console.log(svgr);
+  )
+  console.log(svgr)
+  console.log(ENV.VITE_APP_HOST)
   return {
-    base: "./",
-    root: "./", // js导入的资源路径，src
+    base: './',
+    root: './', // js导入的资源路径，src
     resolve: {
-      extensions: [".json", ".js", ".ts", ".vue", ".jsx", ".tsx"],
+      extensions: ['.json', '.js', '.ts', '.vue', '.jsx', '.tsx'],
       alias: {
-        "@": pathResolve("src"),
-        "/img": pathResolve("src/assets/images"),
-        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js",
+        '@': pathResolve('src'),
+        '/img': pathResolve('src/assets/images'),
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
       },
     },
     server: {
       port: parseInt(ENV.VITE_APP_PORT, 10),
       host: ENV.VITE_APP_HOST,
       proxy: {
-        "/backend": {
+        '/backend': {
           target: ENV.VITE_APP_DEV_PROXY,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/backend/, ""),
+          rewrite: (path) => path.replace(/^\/backend/, ''),
         },
-        "/websocket": {
+        '/websocket': {
           target: ENV.VITE_WEBSOCKET_LOCAL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/websocket/, ""),
+          rewrite: (path) => path.replace(/^\/websocket/, ''),
           ws: true,
           // configure: (proxy, _options) => {
           //   proxy.on('error', (err, _req, _res) => {
@@ -64,7 +65,7 @@ export default defineConfig((params) => {
       },
     },
     build: {
-      minify: "terser", // 必须启用：terserOptions配置才会有效
+      minify: 'terser', // 必须启用：terserOptions配置才会有效
       terserOptions: {
         compress: {
           // 生产环境时移除console.log调试代码
@@ -72,18 +73,18 @@ export default defineConfig((params) => {
           drop_debugger: true,
         },
       },
-      target: "es2015",
+      target: 'es2015',
       manifest: false,
       sourcemap: false,
-      outDir: "dist",
+      outDir: 'dist',
       build: {
         rollupOptions: {
           output: {
             manualChunks: {
               // moment: ['moment'],
-              "lodash-es": ["lodash-es"],
-              "md-editor-v3": ["md-editor-v3"],
-              dayjs: "dayjs",
+              'lodash-es': ['lodash-es'],
+              'md-editor-v3': ['md-editor-v3'],
+              dayjs: 'dayjs',
             },
           },
         },
@@ -102,7 +103,7 @@ export default defineConfig((params) => {
     optimizeDeps: {
       esbuildOptions: {
         define: {
-          global: "globalThis",
+          global: 'globalThis',
         },
         plugins: [
           NodeGlobalsPolyfillPlugin({
@@ -143,5 +144,5 @@ export default defineConfig((params) => {
         \n Build on Time : ${timestamp}`),
       ],
     ],
-  };
-});
+  }
+})
