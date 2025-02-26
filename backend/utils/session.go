@@ -27,7 +27,7 @@ func SetRefreshToken(c *gin.Context, email string) (err error) {
 	UUID := uuid.New().String()
 	domain := c.Request.Host
 	path := "/"
-	c.SetCookie(RefreshTokenCookieName, UUID, config.ExpireTime, path, domain, config.Secure, config.HttpOnly)
+	c.SetCookie(RefreshTokenCookieName, UUID, config.RefreshTokenExpireTime, path, domain, config.Secure, config.HttpOnly)
 
 	err = singleton.Redis.Set(context.TODO(), UUID, email, time.Duration(config.RefreshTokenExpireTime)*time.Second).Err()
 	if err != nil {
