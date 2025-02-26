@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/icon'
 
 interface FormData {
-  username: string
+  email: string
   password: string
 }
 
@@ -27,7 +27,7 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const updateUser = userStore((state) => state.updateUser)
   const [formData, setFormData] = useState<FormData>({
-    username: '',
+    email: '',
     password: '',
   } as FormData)
 
