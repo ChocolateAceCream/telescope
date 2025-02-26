@@ -84,6 +84,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo mv /home/${{ secrets.SERVER_USER }}/temp_main /home/${{ secrets.SERVER_USER }}/telescope/backend/main
+            sudo mv /home/${{ secrets.SERVER_USER }}/temp_main/backend/main /home/${{ secrets.SERVER_USER }}/telescope/backend/main
             sudo chmod +x /home/${{ secrets.SERVER_USER }}/telescope/backend/main  # Set correct permissions
             sudo systemctl restart backend.service  # Ensure you have a systemd service for your backend
