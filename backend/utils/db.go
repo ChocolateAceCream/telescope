@@ -6,6 +6,8 @@ import (
 
 	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
+	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
@@ -34,13 +36,13 @@ func InitDB() (err error) {
 		singleton.Logger.Error("cannot ping DB", zap.Error(err))
 		return
 	}
-
-	singleton.DB = db.New(DB)
+	singleton.DB = DB
+	singleton.Query = db.New(DB)
 	return
 }
 
 func InitTranslation() (err error) {
-	records, err := singleton.DB.GetAllLocales(context.Background())
+	records, err := singleton.Query.GetAllLocales(context.Background())
 	if err != nil {
 		singleton.Logger.Error("GetAllLocales failed", zap.Error(err))
 		return
@@ -54,4 +56,17 @@ func InitTranslation() (err error) {
 	}
 	singleton.Translation = mapper
 	return
+}
+
+func WithTx(c *gin.Context, tx pgx.Tx) {
+	c.Set("tx", tx)
+}
+
+// Retrieve a transaction from context (if exists)
+func GetTx(c *gin.Context) (pgx.Tx, bool) {
+	tx, ok := c.Get("tx")
+	if !ok {
+		return nil, false
+	}
+	return tx.(pgx.Tx), ok
 }

@@ -56,7 +56,7 @@ const Header = () => {
               <Link
                 to={menu.url}
                 key={menu.name}
-                className="font-chewy block hover:text-gray-400 border-b-2 border-shadow h-16 flex items-center justify-center relative px-4"
+                className="font-chewy hover:text-gray-400 border-b-2 border-shadow h-16 flex items-center justify-center relative px-4"
                 onClick={() => setIsOpen(false)}
               >
                 {menu.name}

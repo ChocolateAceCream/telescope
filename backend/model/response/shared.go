@@ -28,9 +28,10 @@ type Paging struct {
 }
 
 const (
-	ERROR        = 1
-	SUCCESS      = 0
-	UNAUTHORIZED = 401
+	ERROR           = 1
+	SUCCESS         = 0
+	UNAUTHORIZED    = 401
+	EXPIRED_SESSION = 499
 )
 
 func translate(c *gin.Context, raw string) (translated string) {
@@ -73,4 +74,8 @@ func FailWithFullDetails(c *gin.Context, data interface{}, msg string) {
 
 func FailWithUnauthorized(c *gin.Context, msg string) {
 	ResponseGenerator(c, UNAUTHORIZED, map[string]interface{}{}, msg)
+}
+
+func FailWithExpiredSession(c *gin.Context, msg string) {
+	ResponseGenerator(c, EXPIRED_SESSION, map[string]interface{}{}, msg)
 }

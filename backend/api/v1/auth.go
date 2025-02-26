@@ -1,10 +1,11 @@
 package apiV1
 
 import (
+	"net/http"
+
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
-	"github.com/ChocolateAceCream/telescope/backend/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -23,9 +24,31 @@ func (a *AuthApi) Login(c *gin.Context) {
 		response.FailWithMessage(c, err.Error())
 		return
 	}
-
-	session := utils.GetSession(c)
-	session.Set("user", user)
 	response.OkWithFullDetails(c, user, "success")
+}
 
+func (a *AuthApi) GoogleLogin(c *gin.Context) {
+	code := c.Query("code")
+	singleton.Logger.Info("code: ", zap.String("code", code))
+	if code == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Code not found"})
+		return
+	}
+
+	// Exchange the authorization code for an access token
+	err := authService.ExchangeCodeForToken(c, code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to exchange code for token"})
+		return
+	}
+	c.Redirect(http.StatusTemporaryRedirect, singleton.Config.OAuth.Google.FrontendBaseUrl)
+}
+
+func (a *AuthApi) RefreshToken(c *gin.Context) {
+	err := authService.RefreshToken(c)
+	if err != nil {
+		response.FailWithUnauthorized(c, "error.invalid.credentials")
+		return
+	}
+	response.OkWithMessage(c, "success")
 }

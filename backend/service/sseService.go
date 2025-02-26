@@ -14,7 +14,7 @@ import (
 type SSEService struct{}
 
 func (s *SSEService) Subscribe(c *gin.Context) (err error) {
-	user, err := utils.GetValueFromSessionByKey[db.AUser](c, "user")
+	user, err := utils.GetValueFromSessionByKey[db.User](c, "user")
 	if err != nil {
 		singleton.Logger.Error("fail to get user from session", zap.Error(err))
 		return

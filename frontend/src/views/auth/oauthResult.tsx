@@ -9,15 +9,19 @@ import { useEffect } from 'react'
 
 const OAuthResult = () => {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const token = params.get('token')
-    const result = params.get('result')
+    // const params = new URLSearchParams(window.location.search)
+    // const token = params.get('token')
+    // const result = params.get('result')
 
-    if (window.opener && result === 'success') {
-      window.opener.postMessage(
-        { token, status: 'success' },
-        window.location.origin,
-      )
+    // if (window.opener && result === 'success') {
+    //   window.opener.postMessage(
+    //     { token, status: 'success' },
+    //     window.location.origin
+    //   )
+    // }
+
+    if (window.opener) {
+      window.opener.postMessage({ status: 'success' }, window.location.origin)
     }
 
     window.close()

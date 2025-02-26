@@ -5,27 +5,13 @@
 package db
 
 import (
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type AUser struct {
-	ID        int32
-	Username  string
-	Email     string
-	Password  string
-	Role      string
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-}
-
 type GoogleLogin struct {
-	ID          uuid.UUID
+	ID          int32
+	Username    string
 	Email       string
-	Name        string
-	GivenName   pgtype.Text
-	FamilyName  pgtype.Text
-	Picture     pgtype.Text
 	AccessToken string
 	IssuedAt    pgtype.Timestamp
 	ExpiredAt   pgtype.Timestamp
@@ -42,6 +28,14 @@ type Locale struct {
 	UpdatedAt         pgtype.Timestamp
 }
 
+type PasswordLogin struct {
+	ID        int32
+	Email     string
+	Password  string
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
 type Test struct {
 	ID        int32
 	Name      string
@@ -52,9 +46,10 @@ type Test struct {
 }
 
 type User struct {
-	ID        uuid.UUID
+	ID        int32
 	Username  string
 	Email     string
+	Info      []byte
 	CreatedAt pgtype.Timestamp
 	UpdatedAt pgtype.Timestamp
 }

@@ -9,77 +9,116 @@ import (
 	"context"
 )
 
-const findUserByUsername = `-- name: FindUserByUsername :exec
-SELECT id, username, email, password, role, created_at, updated_at
-FROM a_users
-WHERE username = $1
+const createNewUser = `-- name: CreateNewUser :exec
+INSERT INTO users (username, email, info)
+VALUES ($1, $2, $3)
+ON CONFLICT (email) DO UPDATE
+SET
+  username = COALESCE(users.username,EXCLUDED.username),
+  info = users.info || excluded.info
 `
 
-func (q *Queries) FindUserByUsername(ctx context.Context, username string) error {
-	_, err := q.db.Exec(ctx, findUserByUsername, username)
+type CreateNewUserParams struct {
+	Username string
+	Email    string
+	Info     []byte
+}
+
+func (q *Queries) CreateNewUser(ctx context.Context, arg CreateNewUserParams) error {
+	_, err := q.db.Exec(ctx, createNewUser, arg.Username, arg.Email, arg.Info)
 	return err
 }
 
-const getUserByUsername = `-- name: GetUserByUsername :one
-select id, username, email, password, role, created_at, updated_at FROM a_users where username = $1
+const getUserByEmail = `-- name: GetUserByEmail :one
+select id, username, email, info, created_at, updated_at FROM users where email = $1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (AUser, error) {
-	row := q.db.QueryRow(ctx, getUserByUsername, username)
-	var i AUser
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
-		&i.Password,
-		&i.Role,
+		&i.Info,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
+const getUserByUsername = `-- name: GetUserByUsername :one
+select id, username, email, info, created_at, updated_at FROM users where username = $1
+`
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByUsername, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Email,
+		&i.Info,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const initPasswordLogins = `-- name: InitPasswordLogins :exec
+insert into password_logins (password, email)
+values (
+    encode(digest($1, 'sha256'), 'hex'),
+    'superadmin@superadmin.com'
+  ),
+  (
+    encode(digest($1, 'sha256'), 'hex'),
+    'admin@admin.com'
+  ) on conflict(email) do nothing
+`
+
+func (q *Queries) InitPasswordLogins(ctx context.Context, digest string) error {
+	_, err := q.db.Exec(ctx, initPasswordLogins, digest)
+	return err
+}
+
 const initUsers = `-- name: InitUsers :exec
-insert into a_users (username, password, email, role)
+insert into users (username, email, info)
 values (
     'superadmin',
-    encode(digest($1, 'sha256'), 'hex'),
     'superadmin@superadmin.com',
-    'super_admin'
+    '{"role": "super_admin","locale":"en"}'::jsonb
   ),
   (
     'admin',
-    encode(digest($1, 'sha256'), 'hex'),
     'admin@admin.com',
-    'admin'
-  ) on conflict(username) do
-update
-SET password = excluded.password,
-  email = excluded.email,
-  role = excluded.role
+    '{"role": "admin","locale":"en"}'::jsonb
+  ) on conflict(email) do update
+SET
+  username = COALESCE(users.username,EXCLUDED.username),
+  info = users.info || excluded.info
 `
 
-func (q *Queries) InitUsers(ctx context.Context, digest string) error {
-	_, err := q.db.Exec(ctx, initUsers, digest)
+func (q *Queries) InitUsers(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, initUsers)
 	return err
 }
 
 const verifyUserCredentials = `-- name: VerifyUserCredentials :one
 select exists (
-    select 1
-    from a_users
-    where username = $1
-      and password = $2
-  ) as valid
+  select 1
+  from password_logins
+  where email = $1 and password = $2
+) as valid
 `
 
 type VerifyUserCredentialsParams struct {
-	Username string
+	Email    string
 	Password string
 }
 
 func (q *Queries) VerifyUserCredentials(ctx context.Context, arg VerifyUserCredentialsParams) (bool, error) {
-	row := q.db.QueryRow(ctx, verifyUserCredentials, arg.Username, arg.Password)
+	row := q.db.QueryRow(ctx, verifyUserCredentials, arg.Email, arg.Password)
 	var valid bool
 	err := row.Scan(&valid)
 	return valid, err

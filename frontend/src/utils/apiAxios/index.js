@@ -4,8 +4,10 @@ import { addSignature } from './signature'
 import showNotification from '@/components/notification'
 import NProgress from 'nprogress'
 import qs from 'qs'
+import { postRenewSession } from '@/api/auth'
 
 import userStore from '@/store/user'
+const SESSION_EXPIRED = 499
 
 const logout = userStore.getState().logout; // Zustand logout function
 const apiAxios = new Proxy(
@@ -40,6 +42,9 @@ apiAxios.defaults.headers.post['Content-Type'] =
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 supportCancelToken(apiAxios)
+
+let isRefreshing = false
+let refreshSubscribers = []
 
 let activeRequest = 0
 let logoutFlag = false
@@ -81,7 +86,7 @@ apiAxios.interceptors.request.use(
 
 // 响应拦截
 apiAxios.interceptors.response.use(
-  (res) => {
+  async (res) => {
     if (res.config.meta?.withProgressBar) {
       NProgress.done()
     }
@@ -110,6 +115,20 @@ apiAxios.interceptors.response.use(
           logoutFlag = false
         }
       }
+
+      // session expired, refresh token
+      if (res.data.error_code === SESSION_EXPIRED && res.config.meta.curRetry === 0) {
+        if (!isRefreshing) {
+          isRefreshing = true
+          await postRenewSession()
+          apiAxios(res.config)
+          refreshSubscribers.forEach((r) => apiAxios(r))
+          isRefreshing = false
+        } else {
+          refreshSubscribers.push(res.config)
+        }
+      }
+
       return Promise.reject(res.data)
     }
     return Promise.resolve(res)

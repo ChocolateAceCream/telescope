@@ -13,7 +13,7 @@ import (
 	"os"
 	"time"
 
-	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
+	"github.com/ChocolateAceCream/telescope/backend/model/dbmodel"
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
@@ -41,7 +41,7 @@ func (a *AwsService) ClassifyImage(c *gin.Context, req request.ClassifyRequest) 
 	return
 }
 
-func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user db.AUser, fileName string) (url string, err error) {
+func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (url string, err error) {
 	path := user.Username + "/" + fileName
 	req, err := singleton.AWS.PresignClient.PresignPutObject(c, &s3.PutObjectInput{
 		Bucket: &singleton.Config.AWS.S3.Bucket,
@@ -56,7 +56,7 @@ func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user db.AUser, file
 	return
 }
 
-func (a *AwsService) GetS3DownloadPresignedUrl(c *gin.Context, user db.AUser, fileName string) (url string, err error) {
+func (a *AwsService) GetS3DownloadPresignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (url string, err error) {
 	path := user.Username + "/" + fileName
 	req, err := singleton.AWS.PresignClient.PresignGetObject(c, &s3.GetObjectInput{
 		Bucket: &singleton.Config.AWS.S3.Bucket,
@@ -71,7 +71,7 @@ func (a *AwsService) GetS3DownloadPresignedUrl(c *gin.Context, user db.AUser, fi
 	return
 }
 
-func (a *AwsService) GetCloudfrontSignedUrl(c *gin.Context, user db.AUser, fileName string) (signedURL string, err error) {
+func (a *AwsService) GetCloudfrontSignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (signedURL string, err error) {
 	privateKey, err := loadPrivateKey("certs/private_key.pem")
 	if err != nil {
 		fmt.Println("failed to load private key:", err.Error())

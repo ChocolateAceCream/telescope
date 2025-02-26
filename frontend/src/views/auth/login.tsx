@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   TextField,
   Button,
@@ -13,9 +13,11 @@ import MyForm from '@/components/form'
 import { useState } from 'react'
 import MyButton from '@/components/button'
 import { sha256 } from '@/utils/encryption'
-import { postLogin } from '@/api/auth'
+import { postLogin, getUserInfo } from '@/api/auth'
 import userStore from '@/store/user'
 import { useNavigate } from 'react-router-dom'
+import Icon from '@/components/icon'
+
 interface FormData {
   username: string
   password: string
@@ -29,20 +31,65 @@ const LoginPage = () => {
     password: '',
   } as FormData)
 
-  const handleSubmit = async (event: React.FormEvent<HTMLDivElement>) => {
+  useEffect(() => {
+    const handleOAuthCallback = async (event: MessageEvent) => {
+      console.log('----event--', event)
+      if (event.origin !== window.location.origin) {
+        console.warn('untrusted origin', event.origin)
+        return
+      }
+
+      const { status } = event.data
+      if (status === 'success') {
+        console.log('login success')
+        const resp = await getUserInfo()
+        console.log('resp:', resp)
+        console.log('resp.data.data:', resp.data.data)
+        updateUser({
+          isAuthed: true,
+          ...resp.data.data,
+        })
+        navigate('/')
+      } else {
+        console.error('login failed')
+      }
+    }
+
+    window.addEventListener('message', handleOAuthCallback)
+
+    return () => {
+      window.removeEventListener('message', handleOAuthCallback, false)
+    }
+  }, [])
+
+  const handlePasswordLogin = async (
+    event: React.FormEvent<HTMLDivElement>
+  ) => {
     console.log('Form data submitted:', formData, sha256(formData.password))
-    const { data: userInfo } = await postLogin({
+    await postLogin({
       ...formData,
       password: sha256(formData.password),
     })
-    console.log('Login result:', userInfo)
 
+    const resp = await getUserInfo()
+    console.log('resp:', resp)
+    console.log('resp.data.data:', resp.data.data)
     updateUser({
       isAuthed: true,
-      ...userInfo,
+      ...resp.data.data,
     })
-
     navigate('/')
+  }
+
+  const handleGoogleLogin = async () => {
+    console.log('Google login')
+    const googleClientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID
+    console.log('googleClientId:', googleClientId)
+
+    const redirectUri = import.meta.env.VITE_APP_GOOGLE_OAUTH_REDIRECT_URI
+    const scope = encodeURIComponent('profile email')
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`
+    window.open(authUrl, '_blank', 'width=500,height=600')
   }
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -64,15 +111,15 @@ const LoginPage = () => {
           <MyForm
             formData={formData}
             setFormData={setFormData}
-            onSubmit={handleSubmit}
+            onSubmit={handlePasswordLogin}
           >
             <TextField
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
+              id="email"
+              label="Email"
+              name="email"
               autoFocus
               className="mb-4"
             />
@@ -106,6 +153,17 @@ const LoginPage = () => {
               Sign up for free!
             </a>
           </Typography>
+
+          <MyButton
+            fullWidth
+            variant="contained"
+            color="primary"
+            className="py-2"
+            onClick={handleGoogleLogin}
+          >
+            <Icon name="google" className="w-4 h-4 pr-1" />
+            Google Login
+          </MyButton>
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 package apiV1
 
 import (
-	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
+	"github.com/ChocolateAceCream/telescope/backend/model/dbmodel"
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
@@ -35,7 +35,7 @@ func (a *AwsApi) Upload(c *gin.Context) {
 		response.FailWithMessage(c, "error.missing.params")
 		return
 	}
-	user, err := utils.GetValueFromSessionByKey[db.AUser](c, "user")
+	user, err := utils.GetValueFromSessionByKey[dbmodel.UserInfo](c, "user")
 	if err != nil {
 		singleton.Logger.Error("fail to get user from session", zap.Error(err))
 		response.FailWithMessage(c, err.Error())
@@ -56,7 +56,7 @@ func (a *AwsApi) Download(c *gin.Context) {
 		response.FailWithMessage(c, "error.missing.params")
 		return
 	}
-	user, err := utils.GetValueFromSessionByKey[db.AUser](c, "user")
+	user, err := utils.GetValueFromSessionByKey[dbmodel.UserInfo](c, "user")
 	if err != nil {
 		singleton.Logger.Error("fail to get user from session", zap.Error(err))
 		response.FailWithMessage(c, err.Error())

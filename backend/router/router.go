@@ -18,8 +18,8 @@ func RouteLoader(r *gin.Engine) {
 	jobApi := apiV1.JobApi{}
 	awsApi := apiV1.AwsApi{}
 	localeApi := apiV1.LocaleApi{}
+	userApi := apiV1.UserApi{}
 	v1 := r.Group("/api/v1")
-	v1.Use(middleware.SessionMiddleware())
 	PublicGroup := v1.Group("/public")
 	{
 
@@ -28,6 +28,8 @@ func RouteLoader(r *gin.Engine) {
 	// auth.Use(middleware.DefaultLimiter()).Use(middleware.SessionMiddleware())
 	{
 		auth.POST("/login", authApi.Login)
+		auth.GET("/google/callback", authApi.GoogleLogin)
+		auth.POST("renew-session", authApi.RefreshToken)
 	}
 
 	locale := PublicGroup.Group("/locale")
@@ -36,7 +38,11 @@ func RouteLoader(r *gin.Engine) {
 	}
 
 	PrivateGroup := v1.Group("")
-	PrivateGroup.Use(middleware.AuthMiddleware())
+	PrivateGroup.Use(middleware.SessionMiddleware())
+	user := PrivateGroup.Group("/user")
+	{
+		user.GET("/info", userApi.GetUserInfo)
+	}
 	sse := PrivateGroup.Group("/sse")
 	{
 		sse.GET("/subscribe", middleware.SSEMiddleware(), sseApi.Subscriber)

@@ -10,7 +10,7 @@ import (
 type LocaleDao struct{}
 
 func (l *LocaleDao) LoadTranslationMapper(c *gin.Context) (records []db.GetAllLocalesRow, err error) {
-	records, err = singleton.DB.GetAllLocales(c)
+	records, err = singleton.Query.GetAllLocales(c)
 	if err != nil {
 		singleton.Logger.Error("GetAllLocales failed", zap.Error(err))
 	}

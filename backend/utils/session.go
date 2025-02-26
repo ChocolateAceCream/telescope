@@ -7,28 +7,73 @@ import (
 	"sync"
 	"time"
 
+	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
+const RefreshTokenCookieName = "refresh-token"
+
 type Session struct {
-	Cookie     string                 `json:"cookie"`
-	ExpireTime int64                  `json:"expireTime"`
-	Content    map[string]interface{} `json:"content"`
-	UUID       string                 `json:"uuid"`
-	Lock       *sync.Mutex            `json:"lock"`
+	Content map[string]interface{} `json:"content"`
+	UUID    string                 `json:"uuid"`
+	Lock    *sync.Mutex            `json:"lock"`
+}
+
+func SetRefreshToken(c *gin.Context, email string) (err error) {
+	config := singleton.Config.Session
+	UUID := uuid.New().String()
+	domain := c.Request.Host
+	path := "/"
+	c.SetCookie(RefreshTokenCookieName, UUID, config.ExpireTime, path, domain, config.Secure, config.HttpOnly)
+
+	err = singleton.Redis.Set(context.TODO(), UUID, email, time.Duration(config.RefreshTokenExpireTime)*time.Second).Err()
+	if err != nil {
+		singleton.Logger.Error("set refresh token failed", zap.Error(err))
+	}
+	return
+}
+
+// set new session in cookie and redis
+func NewSession(c *gin.Context, user db.User) (err error) {
+	config := singleton.Config.Session
+	UUID := uuid.New().String()
+	domain := c.Request.Host
+	path := "/"
+	c.SetCookie(config.CookieName, UUID, config.ExpireTime, path, domain, config.Secure, config.HttpOnly)
+
+	session := Session{
+		Content: map[string]interface{}{
+			"user": user,
+		},
+		UUID: UUID,
+		Lock: &sync.Mutex{},
+	}
+	jsonStr, err := json.Marshal(session)
+	if err != nil {
+		singleton.Logger.Error("marshal session failed", zap.Error(err))
+		return
+	}
+	err = singleton.Redis.Set(context.TODO(), UUID, jsonStr, time.Duration(config.ExpireTime)*time.Second).Err()
+	if err != nil {
+		singleton.Logger.Error("set session failed", zap.Error(err))
+	}
+	return
 }
 
 // obtain val from session by given key
 func (s *Session) Get(key string) (val interface{}, err error) {
 	raw, err := singleton.Redis.Get(context.TODO(), s.UUID).Result()
 	if err != nil {
+		singleton.Logger.Error("get session failed", zap.Error(err))
 		return
 	}
 	var session Session
 	err = json.Unmarshal([]byte(raw), &session)
 	if err != nil {
+		singleton.Logger.Error("unmarshal session failed", zap.Error(err))
 		return
 	}
 	if val, ok := session.Content[key]; ok {
@@ -39,13 +84,16 @@ func (s *Session) Get(key string) (val interface{}, err error) {
 }
 
 // renew session expire time
+/*
 func (s *Session) Renew(c *gin.Context) {
 	newExpire := time.Now().Unix() + int64(singleton.Config.Session.ExpireTime)
 	jsonStr, _ := json.Marshal(s)
 	singleton.Redis.Set(c, s.UUID, jsonStr, time.Duration(newExpire))
 }
+*/
 
-func (s *Session) Set(key string, val any) (err error) {
+// set value in session by given key, also renew the session expire time
+func (s *Session) SetValueByKey(key string, val any) (err error) {
 	s.Lock.Lock()
 	defer s.Lock.Unlock()
 
@@ -66,16 +114,13 @@ func (s *Session) Set(key string, val any) (err error) {
 		singleton.Logger.Error("marshal updated session failed", zap.Error(err))
 		return
 	}
-	newExpire, err := GetSessionRemainingDuration(s)
-	if err != nil {
-		return
-	}
+	newExpire := time.Duration(time.Now().Unix()+int64(singleton.Config.Session.ExpireTime)) * time.Second
 	singleton.Redis.Set(context.TODO(), s.UUID, updated, newExpire)
 	return
 }
 
 func GetSession(c *gin.Context) *Session {
-	cookie, ok := c.Get(singleton.Config.Session.Key)
+	cookie, ok := c.Get(singleton.Config.Session.CookieName)
 	if !ok {
 		singleton.Logger.Error("cannot retrieve cookie from current context")
 		return nil
@@ -89,24 +134,31 @@ func GetSession(c *gin.Context) *Session {
 }
 
 func GetValueFromSessionByKey[T any](c *gin.Context, key string) (val T, err error) {
-	session := GetSession(c)
-	if session == nil {
-		singleton.Logger.Error("no session found")
-		return val, errors.New("no session found")
+	session, ok := c.Get(singleton.Config.Session.CookieName)
+	if !ok {
+		singleton.Logger.Error("cannot retrieve session from current context")
 	}
-	raw, err := session.Get(key)
-	if err != nil {
+	content := session.(Session).Content
+	raw, ok := content[key]
+	if !ok {
+		singleton.Logger.Error("cannot retrieve value from session by given key")
 		return
 	}
+
 	jsonStr, err := json.Marshal(raw)
 	if err != nil {
 		singleton.Logger.Error("marshal failed", zap.Error(err))
 		return
 	}
 	err = json.Unmarshal(jsonStr, &val)
+
+	if err != nil {
+		singleton.Logger.Error("cannot retrieve value from session by given key")
+	}
 	return
 }
 
+/*
 func GetSessionRemainingDuration(s *Session) (duration time.Duration, err error) {
 	remain := s.ExpireTime - time.Now().Unix()
 	if remain < 0 {
@@ -116,3 +168,4 @@ func GetSessionRemainingDuration(s *Session) (duration time.Duration, err error)
 	duration = time.Duration(remain) * time.Second
 	return duration, nil
 }
+*/

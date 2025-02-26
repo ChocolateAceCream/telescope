@@ -4,6 +4,7 @@ import (
 	"embed"
 
 	sqlc "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 
 	"github.com/spf13/viper"
@@ -16,7 +17,8 @@ var (
 	Logger      *zap.Logger
 	Config      ServerConfig
 	Redis       *redis.Client
-	DB          *sqlc.Queries
+	DB          *pgxpool.Pool
+	Query       *sqlc.Queries
 	AWS         *AWSClient
 	Translation map[string]map[string]string
 )

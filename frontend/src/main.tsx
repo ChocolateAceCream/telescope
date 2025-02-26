@@ -1,34 +1,32 @@
+/*
+ * @fileName main.tsx
+ * @author Di Sheng
+ * @date 2025/02/20 17:00:43
+ * @description Description:  App initialization (Mount React, Theme, Zustand, etc.)
+ */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './assets/styles/application.css'
-import router from '@/router'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import './assets/styles/application.css' // Global styles
+import App from './App' // ✅ Import App.tsx
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 const rootElement = document.getElementById('root') as HTMLElement
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Chewy, Inter, sans-serif', // Set your default font family
+    fontFamily: 'Chewy, Inter, sans-serif',
   },
   palette: {
-    primary: {
-      main: '#ffb74d', // Change this to your desired primary color (e.g., Orange 500 from Material UI color palette)
-      contrastText: '#ffffff', // Optional: Change the text color to ensure good contrast
-    },
-    secondary: {
-      main: '#ff9800',
-    },
-    warning: {
-      main: '#F0908A',
-    },
+    primary: { main: '#ffb74d', contrastText: '#ffffff' },
+    secondary: { main: '#ff9800' },
+    warning: { main: '#F0908A' },
   },
 })
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <App /> {/* ✅ App.tsx handles UI & routing */}
     </ThemeProvider>
   </React.StrictMode>
 )
