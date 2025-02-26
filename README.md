@@ -84,10 +84,14 @@ Since my aws ec2 only have 1GB RAM, so I'm not using docker for deployment. Also
 - [x] fix mobile css issue
 - [x] add auth middleware
 
-## 2025/02/09
+## 2025/02/25
+- [x] flip camera
+- [x] google login
+
+github action also need to sync db folder so backend can do migration.
 
 ## TODO
+- [] fix github action
 - [] SSE
 - [] job queue
-- [] flip camera
-- [] sign up, google login, logout
+- [] sign up, logout
