@@ -63,19 +63,26 @@ const Home = () => {
               className="w-full h-[15rem] overflow-hidden border rounded-lg relative"
             />
 
-            {/* 🔹 Retake Button */}
-            <button
-              onClick={handleRetakePhoto} // Reset image
-              className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            >
-              Redo
-            </button>
-
+            {!className && (
+              <p className="mt-2 text-lg font-semibold text-gray-700">
+                Recognizing...
+              </p>
+            )}
             {/* 🔹 Name & Confidence Score */}
             {capturedImage && className && confidence !== null && (
               <p className="mt-2 text-lg font-semibold text-gray-700">
                 Detected: {className} ({confidence.toFixed(1)}%)
               </p>
+            )}
+
+            {/* 🔹 Retake Button */}
+            {capturedImage && className && confidence !== null && (
+              <button
+                onClick={handleRetakePhoto} // Reset image
+                className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                Redo
+              </button>
             )}
           </Box>
         )}

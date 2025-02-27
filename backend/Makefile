@@ -47,3 +47,8 @@ backup:
 	cp main ../backup/backend/main_bk_$(TIMESTAMP)
 	pg_dump -U nuodi -h 0.0.0.0 -W -F c -b -c -f ../backup/backend/db_$(TIMESTAMP).backup iot_backend
 
+release:
+	git checkout release
+	git pull origin release
+	git merge --no-ff main
+	git push origin release
