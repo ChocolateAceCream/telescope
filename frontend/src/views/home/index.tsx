@@ -28,6 +28,8 @@ const Home = () => {
 
   const handleRetakePhoto = () => {
     setCapturedImage(null) // ✅ Reset image
+    setClassName(null) // ✅ Reset class name
+    setConfidence(null) // ✅ Reset confidence
     setIsCameraActive(true) // ✅ Reopen camera
   }
 
@@ -38,13 +40,12 @@ const Home = () => {
     const { data: res } = await getUploadPresignedUrl(payload)
     console.log('get url result:', res)
 
-    const { data: res2 } = await putS3Upload(res.data.presigned_url, blob)
-    const { data: res3 } = await postClassify({
-      image_url:
-        'https://telescope-develop.s3.us-east-1.amazonaws.com/admin/test.png',
+    await putS3Upload(res.data.presigned_url, blob)
+    const { data: classifyResult } = await postClassify({
+      image_url: res.data.image_url,
     })
-    setClassName(res3.data.class_name)
-    setConfidence(res3.data.confidence)
+    setClassName(classifyResult.data.class_name)
+    setConfidence(classifyResult.data.confidence)
   }
 
   return (
@@ -62,20 +63,20 @@ const Home = () => {
               className="w-full h-[15rem] overflow-hidden border rounded-lg relative"
             />
 
-            {/* 🔹 Name & Confidence Score */}
-            {className && confidence !== null && (
-              <p className="mt-2 text-lg font-semibold text-gray-700">
-                Detected: {className} ({confidence.toFixed(1)}%)
-              </p>
-            )}
-
             {/* 🔹 Retake Button */}
             <button
               onClick={handleRetakePhoto} // Reset image
               className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
             >
-              Retake Photo
+              Redo
             </button>
+
+            {/* 🔹 Name & Confidence Score */}
+            {capturedImage && className && confidence !== null && (
+              <p className="mt-2 text-lg font-semibold text-gray-700">
+                Detected: {className} ({confidence.toFixed(1)}%)
+              </p>
+            )}
           </Box>
         )}
       </Box>

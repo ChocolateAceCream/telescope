@@ -41,12 +41,12 @@ func (a *AwsApi) Upload(c *gin.Context) {
 		response.FailWithMessage(c, err.Error())
 		return
 	}
-	presignedUrl, err := awsService.GetS3UploadPresignedUrl(c, user, req.FileName)
+	resp, err := awsService.GetS3UploadPresignedUrl(c, user, req.FileName)
 	if err != nil {
 		response.FailWithMessage(c, err.Error())
 		return
 	}
-	response.OkWithFullDetails(c, gin.H{"presigned_url": presignedUrl}, "success")
+	response.OkWithFullDetails(c, resp, "success")
 }
 
 func (a *AwsApi) Download(c *gin.Context) {

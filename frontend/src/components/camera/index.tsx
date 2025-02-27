@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import MyButton from '@/components/button'
 import { on } from 'events'
 import Icon from '@/components/icon'
-
+import { styled } from '@mui/material/styles'
 interface CameraProps {
   onCapture: (imageUrl: string, blob: Blob) => void
   isOpen?: boolean
@@ -19,6 +19,45 @@ const CameraCapture: React.FC<CameraProps> = ({
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user')
 
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  })
+
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('handleUpload', event)
+    const files = event.target.files
+    if (!files || files.length === 0) {
+      console.warn('No file selected.')
+      return
+    }
+
+    const file = files[0] // Only handle the first file
+
+    // Use FileReader to read the file as a data URL
+    const reader = new FileReader()
+    reader.onload = () => {
+      const imageDataUrl = reader.result as string // Get the base64 image URL
+
+      // Convert the File into a Blob
+      const blob = new Blob([file], { type: file.type })
+
+      console.log('Blob:', blob)
+      console.log('ImageDataUrl:', imageDataUrl)
+
+      // Call the same handler as the camera capture function
+      onCapture(imageDataUrl, blob)
+    }
+
+    reader.readAsDataURL(file) // Read the file as a data URL
+  }
   // Start the camera
   const startCamera = async (mode: 'user' | 'environment') => {
     console.log('-------mode------------', mode)
@@ -89,6 +128,7 @@ const CameraCapture: React.FC<CameraProps> = ({
         context.drawImage(video, 0, 0, canvas.width, canvas.height)
 
         const imageDataUrl = canvas.toDataURL('image/png')
+        console.log('---------imageDataUrl----------', imageDataUrl)
         canvas.toBlob((blob) => {
           console.log('blob:', typeof blob)
           if (!blob) {
@@ -117,13 +157,13 @@ const CameraCapture: React.FC<CameraProps> = ({
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Buttons */}
-      <Box className="flex space-x-4">
+      <Box className="grid grid-cols-4 gap-4">
         <MyButton
           variant="contained"
           color={isCameraOn ? 'error' : 'primary'}
           onClick={toggleCamera}
         >
-          {isCameraOn ? 'Close Camera' : 'Open Camera'}
+          {isCameraOn ? <Icon name="cameraClosed" /> : <Icon name="camera" />}
         </MyButton>
         <MyButton
           variant="contained"
@@ -131,10 +171,14 @@ const CameraCapture: React.FC<CameraProps> = ({
           onClick={captureImage}
           disabled={!isCameraOn}
         >
-          Capture
+          <Icon name="shot" />
         </MyButton>
         <MyButton variant="contained" color="secondary" onClick={flipCamera}>
           <Icon name="flip" />
+        </MyButton>
+        <MyButton variant="contained" color="secondary" component="label">
+          <Icon name="upload" />
+          <VisuallyHiddenInput type="file" onChange={handleUpload} multiple />
         </MyButton>
       </Box>
     </>

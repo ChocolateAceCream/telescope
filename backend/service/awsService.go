@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/ChocolateAceCream/telescope/backend/model/dbmodel"
@@ -41,9 +42,9 @@ func (a *AwsService) ClassifyImage(c *gin.Context, req request.ClassifyRequest) 
 	return
 }
 
-func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (url string, err error) {
+func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (resp response.GetS3UploadPresignedUrlResponse, err error) {
 	path := user.Username + "/" + fileName
-	req, err := singleton.AWS.PresignClient.PresignPutObject(c, &s3.PutObjectInput{
+	r, err := singleton.AWS.PresignClient.PresignPutObject(c, &s3.PutObjectInput{
 		Bucket: &singleton.Config.AWS.S3.Bucket,
 		Key:    &path, // object name, s3 will store the file with this name
 	}, func(opts *s3.PresignOptions) {
@@ -52,7 +53,8 @@ func (a *AwsService) GetS3UploadPresignedUrl(c *gin.Context, user dbmodel.UserIn
 	if err != nil {
 		return
 	}
-	url = req.URL
+	resp.PresignedUrl = r.URL
+	resp.ImageUrl = strings.Split(r.URL, "?")[0]
 	return
 }
 
