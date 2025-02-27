@@ -23,6 +23,10 @@ steps:
 5. add aws credentials to env (or setup aws cli)
 6. go run main.go
 
+## Deploy
+1. commit the code to release branch, which will trigger the github action
+2. run db migration
+3. sync config file
 
 # Dev Journal
 ## 2025/01/28
@@ -88,10 +92,10 @@ Since my aws ec2 only have 1GB RAM, so I'm not using docker for deployment. Also
 - [x] flip camera
 - [x] google login
 
-github action also need to sync db folder so backend can do migration.
+## 2025/02/26
+- [x] upload
 
 ## TODO
-- [] fix github action
 - [] SSE
 - [] job queue
-- [] sign up, logout
+- [] sign up, logout, avatar
