@@ -32,25 +32,21 @@ const Header = () => {
   return (
     <div className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 flex items-center w-full px-4">
       {/* Mobile Menu Button */}
-      <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-        <Icon name="menu" className="menu" />
+      <button className="md:hidden z-20" onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? (
+          <Icon name="close" className="w-4 h-4" />
+        ) : (
+          <Icon name="menu" className="menu" />
+        )}
       </button>
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div
-          className={`z-50 fixed inset-0  flex justify-center
+          className={`z-10 fixed inset-0  flex justify-center mt-3
           transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}
           transition-transform duration-300 ease-in-out`}
         >
-          {/* 🔹 Close Button */}
-          <button
-            className="absolute top-5 right-5 text-white text-3xl focus:outline-none"
-            onClick={() => setIsOpen(false)}
-          >
-            <Icon name="close" />
-          </button>
-
           {/* 🔹 Menu Items */}
           <nav className=" text-2xl bg-white space-y-6 text-center mt-16 w-full bg-opacity-100 px-8">
             {menus.map((menu) => (
