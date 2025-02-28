@@ -12,6 +12,7 @@ package middleware
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
@@ -53,9 +54,10 @@ func SessionHandler(c *gin.Context) {
 			return
 		}
 
-		domain := c.Request.Host
+		// domain := c.Request.Host
 		path := "/"
-		c.SetCookie(config.CookieName, sessionID, config.ExpireTime, path, domain, config.Secure, config.HttpOnly)
+		fmt.Println("-----session middleware------ ")
+		c.SetCookie(config.CookieName, sessionID, config.ExpireTime, path, "", config.Secure, config.HttpOnly)
 	}
 
 	rawSessionStr, err := singleton.Redis.Get(context.TODO(), sessionID).Result()

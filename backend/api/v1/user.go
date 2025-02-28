@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
+	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/ChocolateAceCream/telescope/backend/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -28,4 +29,14 @@ func (u *UserApi) GetUserInfo(c *gin.Context) {
 		return
 	}
 	response.OkWithFullDetails(c, userStruct, "success")
+}
+
+func (u *UserApi) Logout(c *gin.Context) {
+	err := utils.DeleteSession(c, singleton.Config.Session.CookieName)
+	if err != nil {
+		response.FailWithMessage(c, "error.failed.operation")
+		return
+	}
+
+	response.OkWithMessage(c, "success")
 }

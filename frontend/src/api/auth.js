@@ -6,3 +6,5 @@ export const postRefreshToken = () => apiAxios.post('/public/auth/refresh-token'
 export const postRenewSession = () => apiAxios.post('/public/auth/renew-session')
 
 export const getUserInfo = () => apiAxios.get('/user/info')
+export const postLogout = () => apiAxios.post('/user/logout')
+

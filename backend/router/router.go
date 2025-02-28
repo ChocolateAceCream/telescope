@@ -42,6 +42,7 @@ func RouteLoader(r *gin.Engine) {
 	user := PrivateGroup.Group("/user")
 	{
 		user.GET("/info", userApi.GetUserInfo)
+		user.POST("/logout", userApi.Logout)
 	}
 	sse := PrivateGroup.Group("/sse")
 	{

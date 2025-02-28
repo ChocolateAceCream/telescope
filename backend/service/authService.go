@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -158,11 +159,18 @@ func (AuthService *AuthService) RefreshToken(c *gin.Context) (err error) {
 		return
 	}
 
-	err = utils.NewSession(c, user)
+	err = utils.RenewSession(c, user)
 	if err != nil {
 		return
 	}
 
-	err = utils.SetRefreshToken(c, user.Email)
+	// utils.DeleteSession(c, utils.RefreshTokenCookieName)
+	utils.SetRefreshToken(c, user.Email)
+	fmt.Println("------final---")
+	cookie, err := c.Cookie(utils.RefreshTokenCookieName)
+	fmt.Println("RefreshTokenCookieName: ", cookie)
+	cookie, err = c.Cookie(singleton.Config.Session.CookieName)
+	fmt.Println("Session cookie: ", cookie)
+
 	return
 }

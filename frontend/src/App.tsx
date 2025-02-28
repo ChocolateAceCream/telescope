@@ -16,6 +16,7 @@ export default function App() {
   console.log('isAuthed:', isAuthed)
   useEffect(() => {
     if (isAuthed) {
+      console.log('---------isAuthed--------', isAuthed)
       renewSession()
     }
   }, [isAuthed])

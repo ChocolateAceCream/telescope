@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom' // If using React Router
 import logo from '@/assets/image/logo.png'
 import Icon from '@/components/icon'
+import AvatarPopover from './avatar'
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
   const menus = [
@@ -85,6 +86,9 @@ const Header = () => {
           </Link>
         ))}
       </nav>
+      <div className="ml-auto">
+        <AvatarPopover />
+      </div>
     </div>
   )
 }

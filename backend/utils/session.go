@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -25,9 +26,10 @@ type Session struct {
 func SetRefreshToken(c *gin.Context, email string) (err error) {
 	config := singleton.Config.Session
 	UUID := uuid.New().String()
-	domain := c.Request.Host
+	// domain := c.Request.Host
 	path := "/"
-	c.SetCookie(RefreshTokenCookieName, UUID, config.RefreshTokenExpireTime, path, domain, config.Secure, config.HttpOnly)
+	fmt.Println("--set refresh----request host:------ ")
+	c.SetCookie(RefreshTokenCookieName, UUID, config.RefreshTokenExpireTime, path, "", config.Secure, config.HttpOnly)
 
 	err = singleton.Redis.Set(context.TODO(), UUID, email, time.Duration(config.RefreshTokenExpireTime)*time.Second).Err()
 	if err != nil {
@@ -36,13 +38,51 @@ func SetRefreshToken(c *gin.Context, email string) (err error) {
 	return
 }
 
+// renew session in cookie and redis
+func RenewSession(c *gin.Context, user db.User) (err error) {
+	config := singleton.Config.Session
+	sessionID, err := c.Cookie(config.CookieName)
+	if err != nil {
+		// if cookie not found, create new session
+		err = NewSession(c, user)
+		return
+	}
+	_, err = singleton.Redis.Get(context.TODO(), sessionID).Result()
+	if err != nil {
+		// cannot find session in redis, create new session
+		singleton.Logger.Error("get session failed", zap.Error(err))
+
+		path := "/"
+		c.SetCookie(config.CookieName, sessionID, config.ExpireTime, path, "", config.Secure, config.HttpOnly)
+
+		session := Session{
+			Content: map[string]interface{}{
+				"user": user,
+			},
+			UUID: sessionID,
+			Lock: &sync.Mutex{},
+		}
+		jsonStr, _ := json.Marshal(session)
+
+		err = singleton.Redis.Set(context.TODO(), sessionID, jsonStr, time.Duration(config.ExpireTime)*time.Second).Err()
+		if err != nil {
+			singleton.Logger.Error("set session failed", zap.Error(err))
+			return err
+		}
+	}
+	// renew session expire time
+	err = singleton.Redis.Expire(context.TODO(), sessionID, time.Duration(config.ExpireTime)*time.Second).Err()
+	return
+}
+
 // set new session in cookie and redis
 func NewSession(c *gin.Context, user db.User) (err error) {
 	config := singleton.Config.Session
 	UUID := uuid.New().String()
-	domain := c.Request.Host
+	// domain := c.Request.Host
 	path := "/"
-	c.SetCookie(config.CookieName, UUID, config.ExpireTime, path, domain, config.Secure, config.HttpOnly)
+	fmt.Println("--newsession------ ")
+	c.SetCookie(config.CookieName, UUID, config.ExpireTime, path, "", config.Secure, config.HttpOnly)
 
 	session := Session{
 		Content: map[string]interface{}{
@@ -155,6 +195,24 @@ func GetValueFromSessionByKey[T any](c *gin.Context, key string) (val T, err err
 	if err != nil {
 		singleton.Logger.Error("cannot retrieve value from session by given key")
 	}
+	return
+}
+
+func DeleteSession(c *gin.Context, cookieName string) (err error) {
+	config := singleton.Config.Session
+	cookie, err := c.Cookie(cookieName)
+	fmt.Println("---------cookie:---------- ", cookieName)
+	if err != nil {
+		singleton.Logger.Error("cannot retrieve cookie from current context", zap.Error(err))
+		return
+	}
+	err = singleton.Redis.Del(context.TODO(), cookie).Err()
+	if err != nil {
+		singleton.Logger.Error("delete session failed", zap.Error(err))
+		return
+	}
+	fmt.Println("--del----request host:------ ", c.Request.Host)
+	c.SetCookie(config.CookieName, "", -1, "/", "", config.Secure, config.HttpOnly)
 	return
 }
 
