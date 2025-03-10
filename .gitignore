@@ -5,3 +5,5 @@ frontend/dist
 backend/main
 frontend/tsconfig.tsbuildinfo
 frontend/stats.html
+alg/caltech_birds_densenet.keras
+alg/cnn_model_v3.h5

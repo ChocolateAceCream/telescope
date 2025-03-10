@@ -1,46 +1,78 @@
 # coding=utf-8
-# Copyright 2024 The TensorFlow Datasets Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""Caltech birds dataset."""
-
-import collections
-import concurrent.futures
-import os
-import re
-
-from etils import epath
-import numpy as np
-from tensorflow_datasets.core.utils.lazy_imports_utils import tensorflow as tf
-import tensorflow_datasets.public_api as tfds
+import tensorflow as tf
+import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
+import numpy as np
+from tensorflow.keras.applications import DenseNet121
+from tensorflow.keras import layers, models
 
-# Construct a tf.data.Dataset
-ds,info = tfds.load('caltech_birds2011', split='train', as_supervised=True, shuffle_files=True, with_info=True)
+# ✅ Load the Caltech Birds dataset
+ds, info = tfds.load('caltech_birds2011', split='train', as_supervised=True, shuffle_files=True, with_info=True)
 
-# Get class names
-label_names = info.features['label'].names
-# Print dataset structure
-for image, label in ds.take(1):
-    print("Image shape:", image.shape)
-    print("Label:", label.numpy())
+# ✅ Extract class names
+label_names = info.features["label"].names
+num_classes = len(label_names)  # 200 bird species
 
-# Plot first 5 images
-plt.figure(figsize=(10, 5))
-for i, (image, label) in enumerate(ds.take(5)):
-    plt.subplot(1, 5, i+1)
-    plt.imshow(image.numpy())
-    plt.axis("off")
-    plt.title(label_names[label.numpy()], fontsize=8)  # Get label name
-plt.show()
+# ✅ Data Augmentation function
+def augment(image, label):
+    """Apply data augmentation transformations."""
+    image = tf.image.resize(image, (224, 224))  # Resize for DenseNet
+    image = tf.image.random_flip_left_right(image)  # Random horizontal flip
+    image = tf.image.random_brightness(image, max_delta=0.2)  # Adjust brightness
+    image = tf.image.random_contrast(image, lower=0.8, upper=1.2)  # Adjust contrast
+    image = tf.image.random_saturation(image, lower=0.8, upper=1.2)  # Adjust saturation
+    image = tf.cast(image, tf.float32) / 255.0  # Normalize (0-1)
+
+    return image, label
+
+# ✅ Apply augmentation & batch the dataset
+batch_size = 32
+train_ds = ds.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
+train_ds = train_ds.batch(batch_size).shuffle(1000).prefetch(tf.data.AUTOTUNE)
+
+# ✅ Load Pretrained DenseNet121 Model
+base_model = DenseNet121(weights="imagenet", include_top=False, input_shape=(224, 224, 3))
+base_model.trainable = False  # Freeze base model
+
+# ✅ Build Model
+model = models.Sequential([
+    base_model,
+    layers.GlobalAveragePooling2D(),  # Pool features
+    layers.Dense(512, activation="relu"),
+    layers.Dropout(0.5),  # Prevent overfitting
+    layers.Dense(num_classes, activation="softmax")  # 200 bird classes
+])
+
+# ✅ Compile Model
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])
+
+# ✅ Train the Model
+epochs = 200
+history = model.fit(train_ds, epochs=epochs)
+
+# ✅ Plot Training History
+# plt.figure(figsize=(12, 5))
+
+# # Accuracy
+# plt.subplot(1, 2, 1)
+# plt.plot(history.history["accuracy"], label="Train Accuracy")
+# plt.xlabel("Epoch")
+# plt.ylabel("Accuracy")
+# plt.legend()
+# plt.title("Training Accuracy")
+
+# # Loss
+# plt.subplot(1, 2, 2)
+# plt.plot(history.history["loss"], label="Train Loss")
+# plt.xlabel("Epoch")
+# plt.ylabel("Loss")
+# plt.legend()
+# plt.title("Training Loss")
+
+# plt.show()
+
+# ✅ Save Model
+model.save("caltech_birds_densenet.keras")
+print("✅ Model saved as caltech_birds_densenet.keras")
