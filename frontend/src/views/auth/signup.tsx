@@ -202,7 +202,6 @@ const SignupPage = () => {
                 variant="outlined"
                 id="code"
                 name="code"
-                required
               />
               <Button
                 className="w-[40%] "
