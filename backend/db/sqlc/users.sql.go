@@ -9,6 +9,24 @@ import (
 	"context"
 )
 
+const createNewPasswordLogin = `-- name: CreateNewPasswordLogin :exec
+INSERT INTO password_logins (password, email)
+VALUES (
+  $1,
+  $2
+)
+`
+
+type CreateNewPasswordLoginParams struct {
+	Password string
+	Email    string
+}
+
+func (q *Queries) CreateNewPasswordLogin(ctx context.Context, arg CreateNewPasswordLoginParams) error {
+	_, err := q.db.Exec(ctx, createNewPasswordLogin, arg.Password, arg.Email)
+	return err
+}
+
 const createNewUser = `-- name: CreateNewUser :exec
 INSERT INTO users (username, email, info)
 VALUES ($1, $2, $3)

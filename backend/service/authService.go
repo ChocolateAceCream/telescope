@@ -174,3 +174,89 @@ func (AuthService *AuthService) RefreshToken(c *gin.Context) (err error) {
 
 	return
 }
+
+func (AuthService *AuthService) SendCode(c *gin.Context, email string) (err error) {
+	randomCode := utils.RandomNumber(singleton.Config.Captcha.Length)
+	singleton.Redis.Set(c, singleton.Config.Email.Prefix+":"+email, randomCode, time.Duration(singleton.Config.Email.Expiration)*time.Minute)
+	body := fmt.Sprintf("verification code is <b>%v</b>, expired in %v minutes", randomCode, singleton.Config.Email.Expiration)
+	return utils.SendMail(email, "Verification Code", body)
+}
+
+func (AuthService *AuthService) Register(c *gin.Context, payload request.RegisterRequest) (user db.User, err error) {
+	// check if email exists
+	_, err = userDao.GetUserByEmail(c, payload.Email)
+	if err == nil {
+		err = fmt.Errorf("error.email.exists")
+		return
+	}
+
+	// check if code and email matched
+	code, err := singleton.Redis.Get(c, singleton.Config.Email.Prefix+":"+payload.Email).Result()
+	if err != nil {
+		err = fmt.Errorf("error.invalid.code")
+		return
+	}
+	if code != payload.Code {
+		err = fmt.Errorf("error.invalid.code")
+		return
+	}
+
+	// start a transaction to create user and password login
+	tx, err := singleton.DB.BeginTx(c, pgx.TxOptions{})
+	if err != nil {
+		singleton.Logger.Error("begin tx failed", zap.Error(err))
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+	defer tx.Rollback(c)
+	utils.WithTx(c, tx)
+
+	createUserPayload := db.CreateNewUserParams{
+		Email:    payload.Email,
+		Username: payload.Username,
+		Info:     []byte("{}"),
+	}
+	err = userDao.CreateUser(c, createUserPayload)
+	if err != nil {
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+
+	passwordLoginPayload := db.CreateNewPasswordLoginParams{
+		Email:    payload.Email,
+		Password: payload.Password,
+	}
+	err = userDao.CreateNewPasswordLogin(c, passwordLoginPayload)
+	if err != nil {
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+
+	err = tx.Commit(c)
+	if err != nil {
+		singleton.Logger.Error("commit tx failed", zap.Error(err))
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+
+	// create session
+	user, err = userDao.GetUserByEmail(c, payload.Email)
+	if err != nil {
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+
+	// login success, set session
+	err = utils.NewSession(c, user)
+	if err != nil {
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+
+	err = utils.SetRefreshToken(c, user.Email)
+	if err != nil {
+		err = fmt.Errorf("error.failed.operation")
+		return
+	}
+	return
+}

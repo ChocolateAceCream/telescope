@@ -52,3 +52,33 @@ func (a *AuthApi) RefreshToken(c *gin.Context) {
 	}
 	response.OkWithMessage(c, "success")
 }
+
+func (a *AuthApi) SendCode(c *gin.Context) {
+	var req request.SendCodeRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		singleton.Logger.Error("Failed to bind JSON", zap.Error(err))
+		response.FailWithMessage(c, "error.missing.params")
+		return
+	}
+	err := authService.SendCode(c, req.Email)
+	if err != nil {
+		response.FailWithMessage(c, "error.failed.operation")
+		return
+	}
+	response.OkWithMessage(c, "success")
+}
+
+func (a *AuthApi) Register(c *gin.Context) {
+	var req request.RegisterRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		singleton.Logger.Error("Failed to bind JSON", zap.Error(err))
+		response.FailWithMessage(c, "error.missing.params")
+		return
+	}
+	user, err := authService.Register(c, req)
+	if err != nil {
+		response.FailWithMessage(c, err.Error())
+		return
+	}
+	response.OkWithFullDetails(c, user, "success")
+}

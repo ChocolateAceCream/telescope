@@ -95,7 +95,16 @@ Since my aws ec2 only have 1GB RAM, so I'm not using docker for deployment. Also
 ## 2025/02/26
 - [x] upload
 
+## 2025/02/28
+- [x] logout
+- [x] avatar
+
+## 2025/03/10
+- [x] caltech_birds2011 model
+
+## 2025/03/14
+- [x] sign up with email verification
+
 ## TODO
 - [] SSE
 - [] job queue
-- [] sign up, logout, avatar

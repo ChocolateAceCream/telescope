@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import Home from '@/views/home'
 import Login from '@/views/auth/login'
+import Signup from '@/views/auth/signup'
 import OAuthResult from '@/views/auth/oauthResult'
 import Layout from '@/layout/baseLayout'
 import { SSEProvider } from '@/hooks/useSSE'
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/signup',
+    element: <Signup />,
   },
   {
     path: '/oauth-success',

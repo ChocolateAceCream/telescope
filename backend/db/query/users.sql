@@ -46,3 +46,10 @@ ON CONFLICT (email) DO UPDATE
 SET
   username = COALESCE(users.username,EXCLUDED.username),
   info = users.info || excluded.info;
+
+-- name: CreateNewPasswordLogin :exec
+INSERT INTO password_logins (password, email)
+VALUES (
+  $1,
+  $2
+);

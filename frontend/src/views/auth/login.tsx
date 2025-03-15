@@ -17,6 +17,7 @@ import { postLogin, getUserInfo } from '@/api/auth'
 import userStore from '@/store/user'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/icon'
+import { Link } from 'react-router-dom'
 
 interface FormData {
   email: string
@@ -71,12 +72,10 @@ const LoginPage = () => {
       password: sha256(formData.password),
     })
 
-    const resp = await getUserInfo()
-    console.log('resp:', resp)
-    console.log('resp.data.data:', resp.data.data)
+    const { data: resp } = await getUserInfo()
     updateUser({
       isAuthed: true,
-      ...resp.data.data,
+      ...resp.data,
     })
     navigate('/')
   }
@@ -144,15 +143,14 @@ const LoginPage = () => {
               Sign In
             </MyButton>
           </MyForm>
-          <Typography
-            variant="body2"
-            className="mt-6 text-center text-gray-600"
-          >
-            Don&#39;t have an account?{' '}
-            <a href="#" className="text-red-500 hover:underline">
-              Sign up for free!
-            </a>
-          </Typography>
+          <div className="my-1.5 text-center text-gray-600">
+            <Typography variant="body2">
+              Don&#39;t have an account?{' '}
+              <Link to="/signup" className="text-red-500 hover:underline">
+                Sign up for free!
+              </Link>
+            </Typography>
+          </div>
 
           <MyButton
             fullWidth

@@ -30,6 +30,8 @@ func RouteLoader(r *gin.Engine) {
 		auth.POST("/login", authApi.Login)
 		auth.GET("/google/callback", authApi.GoogleLogin)
 		auth.POST("renew-session", authApi.RefreshToken)
+		auth.POST("/send-code", authApi.SendCode)
+		auth.POST("/register", authApi.Register)
 	}
 
 	locale := PublicGroup.Group("/locale")

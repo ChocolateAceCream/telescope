@@ -51,6 +51,11 @@ func Init() (r *gin.Engine, err error) {
 		return
 	}
 
+	err = utils.InitValidator()
+	if err != nil {
+		return
+	}
+
 	// TODO: check config to see if this function is enabled. If enabled, check kafka connection
 	// err = workers.StartWorkerPool()
 	// if err != nil {

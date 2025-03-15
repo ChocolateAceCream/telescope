@@ -71,3 +71,15 @@ func (u *UserDao) CreateUser(c *gin.Context, payload db.CreateNewUserParams) (er
 	}
 	return
 }
+
+func (u *UserDao) CreateNewPasswordLogin(c *gin.Context, payload db.CreateNewPasswordLoginParams) (err error) {
+	q := singleton.Query
+	if tx, ok := utils.GetTx(c); ok {
+		q = q.WithTx(tx)
+	}
+	err = q.CreateNewPasswordLogin(c, payload)
+	if err != nil {
+		singleton.Logger.Error("CreateNewPasswordLogin failed", zap.Error(err))
+	}
+	return
+}
