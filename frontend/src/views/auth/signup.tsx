@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
   Checkbox,
+  Divider,
   FormControlLabel,
 } from '@mui/material'
 // import { FcGoogle } from 'react-icons/fc'
@@ -225,6 +226,18 @@ const SignupPage = () => {
               Register
             </MyButton>
           </MyForm>
+          <Divider className="p-2 px-2 text-gray-500">OR</Divider>
+          <MyButton
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className="!bg-blue-500 !hover:bg-green-700 !text-white"
+          >
+            <Link className="w-full" to="/login">
+              Sign in to an existing account
+            </Link>
+          </MyButton>
         </CardContent>
       </Card>
     </div>
