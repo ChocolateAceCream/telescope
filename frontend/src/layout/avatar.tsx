@@ -32,14 +32,48 @@ const AvatarPopover: React.FC = () => {
     logout()
     navigate('/login') // Redirect to login page after logout
   }
-  const avatarUrl = userStore((state) => state.getAvatar)
+  const avatarUrl = userStore(
+    (state) =>
+      state.user.picture || generateCanvasAvatar(state.user.username || 'Guest')
+  )
+
+  const generateCanvasAvatar = (name: string, size = 100) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('Canvas not supported')
+
+    // Background color
+    ctx.fillStyle = '#ffb74d'
+    ctx.fillRect(0, 0, size, size)
+
+    // Text styling
+    ctx.fillStyle = '#ffffff'
+    ctx.font = `${size / 2.5}px Arial`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    // Extract initials
+    const initials = name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+
+    // Draw initials
+    ctx.fillText(initials, size / 2, size / 2)
+
+    // Convert canvas to image
+    return canvas.toDataURL()
+  }
 
   return (
     <Box>
       {/* ✅ Avatar that triggers the popover */}
       <Avatar
         alt="User Avatar"
-        src={avatarUrl()} // Example image
+        src={avatarUrl} // Example image
         sx={{ cursor: 'pointer' }}
         onClick={handleOpen}
       />
