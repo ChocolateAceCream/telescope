@@ -9,34 +9,7 @@ const AvatarPopover: React.FC = () => {
   const logout = userStore((state) => state.logout)
   const navigate = useNavigate()
 
-  // Open popover when clicking the avatar
-  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  // Close popover
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  // Handle menu actions
-  const handleMenuClick = (option: string) => {
-    console.log(option) // Replace with actual actions (e.g., navigation, logout)
-    handleClose()
-  }
-
-  const handleLogout = async () => {
-    console.log('Logging out')
-    await postLogout()
-    handleClose()
-    logout()
-    navigate('/login') // Redirect to login page after logout
-  }
-  const avatarUrl = userStore(
-    (state) =>
-      state.user.picture || generateCanvasAvatar(state.user.username || 'Guest')
-  )
-
+  // Function moved to the top
   const generateCanvasAvatar = (name: string, size = 100) => {
     const canvas = document.createElement('canvas')
     canvas.width = size
@@ -66,6 +39,36 @@ const AvatarPopover: React.FC = () => {
 
     // Convert canvas to image
     return canvas.toDataURL()
+  }
+
+  // Avatar URL (uses the function to generate avatar if no picture is available)
+  const avatarUrl = userStore(
+    (state) =>
+      state.user.picture || generateCanvasAvatar(state.user.username || 'Guest')
+  )
+
+  // Open popover when clicking the avatar
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  // Close popover
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  // Handle menu actions
+  const handleMenuClick = (option: string) => {
+    console.log(option) // Replace with actual actions (e.g., navigation, logout)
+    handleClose()
+  }
+
+  const handleLogout = async () => {
+    console.log('Logging out')
+    await postLogout()
+    handleClose()
+    logout()
+    navigate('/login') // Redirect to login page after logout
   }
 
   return (
