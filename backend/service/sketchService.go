@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"net/url"
+	"strings"
 
 	db "github.com/ChocolateAceCream/telescope/backend/db/sqlc"
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
@@ -18,8 +18,6 @@ import (
 type SketchService struct{}
 
 func (s *SketchService) UploadSketch(c *gin.Context, user db.User, req request.UploadSketchRequest) (err error) {
-	fmt.Println("------user------", user)
-	fmt.Println("------req------", req)
 	project, err := projectDao.GetProjectByName(c, req.Project)
 	if errors.Is(err, sql.ErrNoRows) {
 		// project not found, create a new project
@@ -35,7 +33,6 @@ func (s *SketchService) UploadSketch(c *gin.Context, user db.User, req request.U
 			return
 		}
 	}
-	fmt.Println("------project------", project)
 	for _, file := range req.Files {
 		f, _ := file.Open()
 		defer f.Close()
@@ -45,7 +42,8 @@ func (s *SketchService) UploadSketch(c *gin.Context, user db.User, req request.U
 			Body:   f,
 		})
 		if err == nil {
-			url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s/%s/%s", singleton.Config.AWS.S3.SketchPublicBucket, singleton.Config.AWS.Region, singleton.Config.AWS.S3.SketchFolder, url.PathEscape(project.ProjectName), file.Filename)
+			url := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s/%s/%s", singleton.Config.AWS.S3.SketchPublicBucket, singleton.Config.AWS.Region, singleton.Config.AWS.S3.SketchFolder, project.ProjectName, file.Filename)
+			url = strings.ReplaceAll(url, " ", "+")
 			_, err = sketchDao.CreateSketch(c, db.NewSketchParams{
 				ProjectName:  project.ProjectName,
 				ProjectID:    project.ID,

@@ -43,26 +43,26 @@ const Home = () => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
-      const payload = {
-        page_number: page + 1,
-        page_size: perPage,
-      }
-      const { data: resp } = await getProjectList({ params: payload })
-      console.log('--------resp-----', resp)
-
-      setTotalCount(resp.data.total)
-
-      resp.data.projects.map((i: Project) => {
-        i.updated_at = dayjs(i.updated_at).format('MM-DD-YYYY')
-        return i
-      })
-      setProjects(resp.data.projects)
-      setLoading(false)
+  const loadData = async () => {
+    setLoading(true)
+    const payload = {
+      page_number: page + 1,
+      page_size: perPage,
     }
+    const { data: resp } = await getProjectList({ params: payload })
+    console.log('--------resp-----', resp)
 
+    setTotalCount(resp.data.total)
+
+    resp.data.projects.map((i: Project) => {
+      i.updated_at = dayjs(i.updated_at).format('MM-DD-YYYY')
+      return i
+    })
+    setProjects(resp.data.projects)
+    setLoading(false)
+  }
+
+  useEffect(() => {
     loadData()
   }, [page, perPage])
 
@@ -94,6 +94,7 @@ const Home = () => {
 
     const { data: resp } = await postSketchUpload(form)
     handleCloseModal()
+    loadData()
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,8 +1,6 @@
 package apiV1
 
 import (
-	"fmt"
-
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/utils"
@@ -17,10 +15,8 @@ func (s *SketchApi) UploadSketch(c *gin.Context) {
 		response.FailWithMessage(c, "error.failed.operation")
 		return
 	}
-	fmt.Println("------user------", user)
 	var req request.UploadSketchRequest
 	if err := c.ShouldBind(&req); err != nil {
-		fmt.Println("------err------", err)
 		response.FailWithMessage(c, "error.missing.params")
 		return
 	}
