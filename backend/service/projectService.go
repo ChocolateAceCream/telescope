@@ -28,6 +28,7 @@ func (p *ProjectService) GetProjectDetails(c *gin.Context, projectID int) (resp 
 			ID:          int(project.ID),
 			ProjectName: project.ProjectName,
 			Comment:     project.Comment.String,
+			Address:     project.Address.String,
 			UpdatedAt:   project.UpdatedAt.Time,
 			Status:      project.Status.String,
 		},

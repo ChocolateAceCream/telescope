@@ -203,6 +203,7 @@ const Home = () => {
     { key: 'action', label: 'Action' },
     { key: 'updated_at', label: 'Updated At' },
     { key: 'comment', label: 'Comment' },
+    { key: 'address', label: 'Address' },
     { key: 'status', label: 'Status' },
   ]
 

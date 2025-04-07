@@ -60,6 +60,10 @@ const Details = () => {
                   <strong>Status:</strong> {projectDetail.project.status}
                 </Typography>
                 <Typography variant="body1">
+                  <strong>Address:</strong>{' '}
+                  {projectDetail.project.address || 'No address provided'}
+                </Typography>
+                <Typography variant="body1">
                   <strong>Comment:</strong>{' '}
                   {projectDetail.project.comment || 'No comment'}
                 </Typography>

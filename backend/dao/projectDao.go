@@ -32,7 +32,7 @@ func (p *ProjectDao) CreateProject(c *gin.Context, payload db.NewProjectParams) 
 func (p *ProjectDao) GetProjectList(c *gin.Context, payload request.ProjectListRequestParam) (list []response.Project, err error) {
 	query := fmt.Sprintf(
 		`
-			SELECT id, project_name, comment, status, updated_at
+			SELECT id, project_name, comment, status, updated_at, address
 			FROM project
 			ORDER BY %s %s
 			LIMIT $1 OFFSET $2
@@ -44,7 +44,7 @@ func (p *ProjectDao) GetProjectList(c *gin.Context, payload request.ProjectListR
 	}
 	for rows.Next() {
 		var p db.Project
-		err = rows.Scan(&p.ID, &p.ProjectName, &p.Comment, &p.Status, &p.UpdatedAt)
+		err = rows.Scan(&p.ID, &p.ProjectName, &p.Comment, &p.Status, &p.UpdatedAt, &p.Address)
 		if err != nil {
 			singleton.Logger.Error("GetProjectList failed", zap.Error(err))
 			return
@@ -53,6 +53,7 @@ func (p *ProjectDao) GetProjectList(c *gin.Context, payload request.ProjectListR
 			ID:          int(p.ID),
 			ProjectName: p.ProjectName,
 			Comment:     p.Comment.String,
+			Address:     p.Address.String,
 			UpdatedAt:   p.UpdatedAt.Time,
 			Status:      p.Status.String,
 		}
@@ -62,7 +63,6 @@ func (p *ProjectDao) GetProjectList(c *gin.Context, payload request.ProjectListR
 		singleton.Logger.Error("GetProjectList failed", zap.Error(err))
 		return
 	}
-	fmt.Println("----------list----------", list)
 	return
 }
 

@@ -23,10 +23,10 @@ func (s *SketchService) UploadSketch(c *gin.Context, user db.User, req request.U
 		// project not found, create a new project
 		payload := db.NewProjectParams{
 			ProjectName: req.Project,
-			Comment:     pgtype.Text{String: req.Comment, Valid: false},
+			Comment:     pgtype.Text{String: req.Comment, Valid: req.Comment != ""},
 			Creator:     user.ID,
 			Status:      pgtype.Text{String: "active", Valid: true},
-			Address:     pgtype.Text{String: req.Address, Valid: false},
+			Address:     pgtype.Text{String: req.Address, Valid: req.Address != ""},
 		}
 		project, err = projectDao.CreateProject(c, payload)
 		if err != nil {
