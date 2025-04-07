@@ -8,6 +8,7 @@ type AWSClient struct {
 }
 
 type AWSConfig struct {
+	Region     string           `mapstructure:"region" json:"region" yaml:"region"`
 	S3         S3Config         `mapstructure:"s3" json:"s3" yaml:"s3"`
 	CloudFront CloudFrontConfig `mapstructure:"cloud-front" json:"cloud_front" yaml:"cloud-front"`
 	Lambda     LambdaConfig     `mapstructure:"lambda" json:"lambda" yaml:"lambda"`
@@ -19,6 +20,8 @@ type LambdaConfig struct {
 type S3Config struct {
 	Bucket                 string `mapstructure:"bucket" json:"bucket" yaml:"bucket"`
 	PresignedUrlExpiration int64  `mapstructure:"presigned-url-expiration" json:"presigned_url_expiration" yaml:"presigned-url-expiration"`
+	SketchFolder           string `mapstructure:"sketch-folder" json:"sketch_folder" yaml:"sketch-folder"`
+	SketchPublicBucket     string `mapstructure:"sketch-public-bucket" json:"sketch_public_bucket" yaml:"sketch-public-bucket"`
 }
 
 type CloudFrontConfig struct {

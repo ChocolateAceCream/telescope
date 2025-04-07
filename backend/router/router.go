@@ -19,6 +19,8 @@ func RouteLoader(r *gin.Engine) {
 	awsApi := apiV1.AwsApi{}
 	localeApi := apiV1.LocaleApi{}
 	userApi := apiV1.UserApi{}
+	sketchApi := apiV1.SketchApi{}
+	projectApi := apiV1.ProjectApi{}
 	v1 := r.Group("/api/v1")
 	PublicGroup := v1.Group("/public")
 	{
@@ -56,8 +58,21 @@ func RouteLoader(r *gin.Engine) {
 	}
 	aws := PrivateGroup.Group("/aws")
 	{
-		aws.POST("/upload", awsApi.Upload)
+		aws.POST("/generate-presigned-url", awsApi.GeneratePresignedUrl)
 		aws.POST("/classify", awsApi.Classify)
 		aws.GET("/download", awsApi.Download)
+	}
+	sketch := PrivateGroup.Group("/sketch")
+	{
+		sketch.POST("/upload", sketchApi.UploadSketch)
+		sketch.GET("/list", sketchApi.GetSketchList)
+		sketch.GET("/detail", sketchApi.GetSketchDetail)
+		sketch.PUT("/update", sketchApi.UpdateSketch)
+		sketch.DELETE("/delete", sketchApi.DeleteSketch)
+	}
+	project := PrivateGroup.Group("/project")
+	{
+		project.GET("/list", projectApi.GetProjectList)
+		project.GET("/details/:id", projectApi.GetProjectDetails)
 	}
 }

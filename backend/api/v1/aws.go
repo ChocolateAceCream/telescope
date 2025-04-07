@@ -28,7 +28,7 @@ func (a *AwsApi) Classify(c *gin.Context) {
 	response.OkWithFullDetails(c, resp, "success")
 }
 
-func (a *AwsApi) Upload(c *gin.Context) {
+func (a *AwsApi) GeneratePresignedUrl(c *gin.Context) {
 	var req request.S3PresignedUrlRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		singleton.Logger.Error("Failed to bind JSON", zap.Error(err))

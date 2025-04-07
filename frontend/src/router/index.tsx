@@ -4,7 +4,7 @@ import {
   useNavigate,
   Navigate,
 } from 'react-router-dom'
-import Home from '@/views/home'
+import Project from '@/views/project'
 import Login from '@/views/auth/login'
 import Signup from '@/views/auth/signup'
 import OAuthResult from '@/views/auth/oauthResult'
@@ -14,6 +14,7 @@ import userStore from '@/store/user'
 import { useEffect } from 'react'
 import NotFound from '@/views/NotFound'
 import Demo from '@/views/Demo'
+import ProjectDetails from '@/views/project/details'
 
 const ProtectedRoute = () => {
   return (
@@ -44,8 +45,14 @@ const router = createBrowserRouter([
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <Navigate to="/home" replace /> },
-      { path: '/home', element: <Home /> },
+      { index: true, element: <Navigate to="/project" replace /> },
+      {
+        path: '/project',
+        children: [
+          { index: true, element: <Project /> },
+          { path: 'details', element: <ProjectDetails /> },
+        ],
+      },
       { path: '/demo', element: <Demo /> },
       // { path: 'about', element: <About /> },
       // other routes...
