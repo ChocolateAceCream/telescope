@@ -29,7 +29,7 @@
     "**/*.tsx",
     "**/**/*.ts",
     "**/**/*.tsx",
-    "src/views/home/index.jsx",
+    "src/views/project/index.jsx",
     "src/main.ts" // Add an input file here
   ],
   "exclude": ["node_modules"]

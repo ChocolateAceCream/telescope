@@ -12,6 +12,7 @@ import (
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"go.uber.org/zap"
 )
 
@@ -21,6 +22,15 @@ type Session struct {
 	Content map[string]interface{} `json:"content"`
 	UUID    string                 `json:"uuid"`
 	Lock    *sync.Mutex            `json:"lock"`
+}
+
+type SessionUser struct {
+	ID        int    `json:"ID"`
+	Username  string `json:"Username"`
+	Email     string `json:"Email"`
+	Info      string `json:"Info"`
+	CreatedAt string `json:"CreatedAt"`
+	UpdatedAt string `json:"UpdatedAt"`
 }
 
 func SetRefreshToken(c *gin.Context, email string) (err error) {
@@ -227,3 +237,27 @@ func GetSessionRemainingDuration(s *Session) (duration time.Duration, err error)
 	return duration, nil
 }
 */
+
+func GetSessionUser(c *gin.Context) (db.User, error) {
+	var dbUser db.User
+
+	sessionUser, err := GetValueFromSessionByKey[SessionUser](c, "user")
+	if err != nil {
+		return dbUser, err
+	}
+
+	// Convert types
+	dbUser.ID = int32(sessionUser.ID)
+	dbUser.Username = sessionUser.Username
+	dbUser.Email = sessionUser.Email
+	dbUser.Info = []byte(sessionUser.Info)
+
+	if t, err := time.Parse(time.RFC3339, sessionUser.CreatedAt); err == nil {
+		dbUser.CreatedAt = pgtype.Timestamp{Time: t, Valid: true}
+	}
+	if t, err := time.Parse(time.RFC3339, sessionUser.UpdatedAt); err == nil {
+		dbUser.UpdatedAt = pgtype.Timestamp{Time: t, Valid: true}
+	}
+
+	return dbUser, nil
+}

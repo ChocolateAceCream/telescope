@@ -1,8 +1,6 @@
 import apiAxios from '../utils/apiAxios'
-export const postUpload = () =>
-  apiAxios.post('/service/upload')
 
-export const getUploadPresignedUrl = (...args) => apiAxios.post('/aws/upload', ...args)
+export const getUploadPresignedUrl = (...args) => apiAxios.post('/aws/generate-presigned-url', ...args)
 export const putS3Upload = (url, file) => apiAxios.put(url, file, {
   headers: {
     'Content-Type': "image/png", // Set the file's MIME type

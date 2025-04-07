@@ -36,6 +36,29 @@ type PasswordLogin struct {
 	UpdatedAt pgtype.Timestamp
 }
 
+type Project struct {
+	ID          int32
+	ProjectName string
+	Comment     pgtype.Text
+	Creator     int32
+	Status      pgtype.Text
+	Address     pgtype.Text
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+}
+
+type Sketch struct {
+	ID           int32
+	ProjectName  string
+	Comment      pgtype.Text
+	ProjectID    int32
+	UploaderID   int32
+	ThumbnailUrl pgtype.Text
+	FullImageUrl string
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
+}
+
 type Test struct {
 	ID        int32
 	Name      string

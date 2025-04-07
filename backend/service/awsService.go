@@ -2,15 +2,9 @@ package service
 
 import (
 	"bytes"
-	"crypto"
-	"crypto/ecdsa"
-	"crypto/rsa"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -18,6 +12,7 @@ import (
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
 	"github.com/ChocolateAceCream/telescope/backend/model/response"
 	"github.com/ChocolateAceCream/telescope/backend/singleton"
+	"github.com/ChocolateAceCream/telescope/backend/utils"
 	"github.com/aws/aws-sdk-go-v2/feature/cloudfront/sign"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
@@ -74,7 +69,7 @@ func (a *AwsService) GetS3DownloadPresignedUrl(c *gin.Context, user dbmodel.User
 }
 
 func (a *AwsService) GetCloudfrontSignedUrl(c *gin.Context, user dbmodel.UserInfo, fileName string) (signedURL string, err error) {
-	privateKey, err := loadPrivateKey("certs/private_key.pem")
+	privateKey, err := utils.LoadPrivateKey("certs/private_key.pem")
 	if err != nil {
 		fmt.Println("failed to load private key:", err.Error())
 		return
@@ -89,53 +84,4 @@ func (a *AwsService) GetCloudfrontSignedUrl(c *gin.Context, user dbmodel.UserInf
 		fmt.Println("failed to sign URL:", err.Error())
 	}
 	return
-}
-
-func loadPrivateKey(path string) (signer crypto.Signer, err error) {
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		return
-	}
-
-	// Decode the PEM block
-	block, _ := pem.Decode(raw)
-	if block == nil {
-		return nil, fmt.Errorf("failed to decode PEM block from file: %s", path)
-	}
-
-	// Parse the private key based on the key type (RSA, ECDSA, etc.)
-	switch block.Type {
-	case "RSA PRIVATE KEY":
-		privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse RSA private key: %v", err)
-		}
-		return privateKey, nil
-
-	case "EC PRIVATE KEY":
-		privateKey, err := x509.ParseECPrivateKey(block.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse EC private key: %v", err)
-		}
-		return privateKey, nil
-
-	case "PRIVATE KEY": // This may handle PKCS#8 encoded keys
-		privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse PKCS#8 private key: %v", err)
-		}
-
-		// Check if it's of the correct type (RSA, ECDSA)
-		switch key := privateKey.(type) {
-		case *rsa.PrivateKey:
-			return key, nil
-		case *ecdsa.PrivateKey:
-			return key, nil
-		default:
-			return nil, fmt.Errorf("unsupported private key type: %T", privateKey)
-		}
-
-	default:
-		return nil, fmt.Errorf("unsupported private key type: %s", block.Type)
-	}
 }
