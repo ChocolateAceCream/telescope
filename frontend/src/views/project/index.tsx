@@ -23,6 +23,7 @@ import Loading from '@/components/loading'
 import { useNavigate } from 'react-router-dom'
 import { Project } from '@/types'
 import dayjs from 'dayjs'
+import imageCompression from 'browser-image-compression'
 
 const Home = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -79,7 +80,16 @@ const Home = () => {
   }
 
   const handleOpenModal = () => setIsModalOpen(true)
-  const handleCloseModal = () => setIsModalOpen(false)
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setFormData({
+      project: '',
+      comment: '',
+      address: '',
+      attachments: [],
+    })
+    setIsSubmitting(false)
+  }
   const handleSubmit = async () => {
     // Add your submission logic here
     setIsSubmitting(true)
@@ -115,21 +125,66 @@ const Home = () => {
     }))
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('handleFileUpload', e.target.files)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return
 
     const files = Array.from(e.target.files)
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      // Optional: maintain the original file name
+      preserveExif: false, // Set to true if you want to keep EXIF data
+    }
 
-    const newAttachments = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
+    try {
+      setIsSubmitting(true)
 
-    setFormData((prev) => ({
-      ...prev,
-      attachments: [...prev.attachments, ...newAttachments],
-    }))
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => {
+          // Only compress image files
+          if (file.type.startsWith('image/')) {
+            try {
+              const compressedFile = await imageCompression(file, options)
+              // Create a new File object with the original name and compressed content
+              const renamedFile = new File([compressedFile], file.name, {
+                type: compressedFile.type,
+                lastModified: Date.now(),
+              })
+              return {
+                file: renamedFile,
+                preview: await imageCompression.getDataUrlFromFile(
+                  compressedFile
+                ),
+                originalName: file.name, // Keep track of original name if needed
+              }
+            } catch (error) {
+              console.error('Error compressing file:', file.name, error)
+              return {
+                file,
+                preview: URL.createObjectURL(file),
+                originalName: file.name,
+              }
+            }
+          }
+          // For non-image files
+          return {
+            file,
+            preview: URL.createObjectURL(file),
+            originalName: file.name,
+          }
+        })
+      )
+
+      setFormData((prev) => ({
+        ...prev,
+        attachments: [...prev.attachments, ...compressedFiles],
+      }))
+    } catch (error) {
+      console.error('Error compressing files:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleRemoveFile = (index: number) => {
