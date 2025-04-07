@@ -15,6 +15,7 @@ type ModalProps = {
   children: React.ReactNode
   submitButtonText?: string
   cancelButtonText?: string
+  isLoading?: boolean
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -25,6 +26,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   submitButtonText = 'Submit',
   cancelButtonText = 'Cancel',
+  isLoading = false,
 }) => {
   return (
     <Dialog
@@ -58,6 +60,7 @@ const Modal: React.FC<ModalProps> = ({
         <Button
           onClick={onSubmit}
           variant="contained"
+          loading={isLoading}
           className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors"
         >
           {submitButtonText}

@@ -40,6 +40,7 @@ const Home = () => {
   const [perPage, setPerPage] = useState(10)
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const navigate = useNavigate()
 
@@ -81,6 +82,7 @@ const Home = () => {
   const handleCloseModal = () => setIsModalOpen(false)
   const handleSubmit = async () => {
     // Add your submission logic here
+    setIsSubmitting(true)
     const form = new FormData()
 
     form.append('project', formData.project)
@@ -93,6 +95,14 @@ const Home = () => {
     })
 
     const { data: resp } = await postSketchUpload(form)
+    setIsSubmitting(false)
+
+    setFormData({
+      project: '',
+      comment: '',
+      address: '',
+      attachments: [],
+    })
     handleCloseModal()
     loadData()
   }
@@ -171,6 +181,7 @@ const Home = () => {
           open={isModalOpen}
           onClose={handleCloseModal}
           onSubmit={handleSubmit}
+          isLoading={isSubmitting}
           title="Upload New Sketch"
         >
           <MyForm
