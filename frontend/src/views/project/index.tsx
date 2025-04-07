@@ -130,7 +130,7 @@ const Home = () => {
 
     const files = Array.from(e.target.files)
     const options = {
-      maxSizeMB: 1,
+      maxSizeMB: 0.1,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
       // Optional: maintain the original file name
