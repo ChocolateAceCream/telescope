@@ -13,8 +13,8 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
   const menus = [
     {
-      name: 'Home',
-      url: '/home',
+      name: 'Project',
+      url: '/project',
     },
     {
       name: 'About',

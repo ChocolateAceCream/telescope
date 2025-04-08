@@ -1,6 +1,9 @@
 package request
 
-import "strings"
+import (
+	"mime/multipart"
+	"strings"
+)
 
 type ProjectListRequest struct {
 	Params ProjectListRequestParam `json:"params" form:"params"`
@@ -12,6 +15,13 @@ type ProjectListRequestParam struct {
 	OrderBy     string `json:"order_by" form:"order_by"`
 	SortBy      string `json:"sort_by" form:"sort_by"`
 	ProjectName string `json:"project_name" form:"project_name"`
+}
+
+type UpdateProjectRequest struct {
+	Project string                  `form:"project" binding:"required"`
+	Comment string                  `form:"comment"`
+	Address string                  `form:"address"`
+	Files   []*multipart.FileHeader `form:"files"`
 }
 
 func (r *ProjectListRequestParam) ApplyDefaultsAndValidate() error {

@@ -13,6 +13,16 @@ values(
 )
 returning *;
 
+-- name: UpdateProject :one
+UPDATE project
+SET project_name = $1,
+  comment = $2,
+  status = $3,
+  address = $4,
+  updated_at = now()
+WHERE id = $5
+RETURNING *;
+
 
 -- name: GetProjectPageInfo :one
 SELECT (

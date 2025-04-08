@@ -73,6 +73,7 @@ func RouteLoader(r *gin.Engine) {
 	project := PrivateGroup.Group("/project")
 	{
 		project.GET("/list", projectApi.GetProjectList)
+		project.PUT("/:id", projectApi.UpdateProject)
 		project.GET("/details/:id", projectApi.GetProjectDetails)
 	}
 }

@@ -21,6 +21,14 @@ func (p *ProjectDao) GetProjectByName(c *gin.Context, name string) (project db.P
 	return
 }
 
+func (p *ProjectDao) UpdateProject(c *gin.Context, payload db.UpdateProjectParams) (project db.Project, err error) {
+	project, err = singleton.Query.UpdateProject(c, payload)
+	if err != nil {
+		singleton.Logger.Error("UpdateProject failed", zap.Error(err))
+	}
+	return
+}
+
 func (p *ProjectDao) CreateProject(c *gin.Context, payload db.NewProjectParams) (project db.Project, err error) {
 	project, err = singleton.Query.NewProject(c, payload)
 	if err != nil {

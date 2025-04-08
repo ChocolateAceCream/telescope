@@ -175,3 +175,44 @@ func (q *Queries) NewProject(ctx context.Context, arg NewProjectParams) (Project
 	)
 	return i, err
 }
+
+const updateProject = `-- name: UpdateProject :one
+UPDATE project
+SET project_name = $1,
+  comment = $2,
+  status = $3,
+  address = $4,
+  updated_at = now()
+WHERE id = $5
+RETURNING id, project_name, comment, creator, status, address, created_at, updated_at
+`
+
+type UpdateProjectParams struct {
+	ProjectName string
+	Comment     pgtype.Text
+	Status      pgtype.Text
+	Address     pgtype.Text
+	ID          int32
+}
+
+func (q *Queries) UpdateProject(ctx context.Context, arg UpdateProjectParams) (Project, error) {
+	row := q.db.QueryRow(ctx, updateProject,
+		arg.ProjectName,
+		arg.Comment,
+		arg.Status,
+		arg.Address,
+		arg.ID,
+	)
+	var i Project
+	err := row.Scan(
+		&i.ID,
+		&i.ProjectName,
+		&i.Comment,
+		&i.Creator,
+		&i.Status,
+		&i.Address,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

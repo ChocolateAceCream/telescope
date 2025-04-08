@@ -24,12 +24,14 @@ import { useNavigate } from 'react-router-dom'
 import { Project } from '@/types'
 import dayjs from 'dayjs'
 import imageCompression from 'browser-image-compression'
+import { putEditProject } from '@/api/project'
 
 const Home = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [projects, setProjects] = useState<Project[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editProject, setEditProject] = useState<Project | null>(null)
   const [formData, setFormData] = useState({
     project: '',
     comment: '',
@@ -80,7 +82,26 @@ const Home = () => {
     setPage(0)
   }
 
-  const handleOpenModal = () => setIsModalOpen(true)
+  const handleOpenModal = (project?: Project) => {
+    if (project) {
+      setEditProject(project)
+      setFormData({
+        project: project.project_name,
+        comment: project.comment || '',
+        address: project.address || '',
+        attachments: [], // Load attachments if needed
+      })
+    } else {
+      setEditProject(null)
+      setFormData({
+        project: '',
+        comment: '',
+        address: '',
+        attachments: [],
+      })
+    }
+    setIsModalOpen(true)
+  }
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setFormData({
@@ -105,9 +126,14 @@ const Home = () => {
       form.append('files', attachment.file) // Key must match Gin's FormFile name
     })
 
-    const { data: resp } = await postSketchUpload(form)
-    setIsSubmitting(false)
+    if (editProject) {
+      await putEditProject(editProject.id, form)
+    } else {
+      await postSketchUpload(form)
+    }
 
+    // const { data: resp } = await postSketchUpload(form)
+    setIsSubmitting(false)
     setFormData({
       project: '',
       comment: '',
@@ -230,7 +256,7 @@ const Home = () => {
         <MyButton
           variant="outlined"
           className="h-[40px]"
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal()}
         >
           <Icon name="add" />
         </MyButton>
@@ -366,13 +392,21 @@ const Home = () => {
                           }`}
                         >
                           {column.key === 'action' ? (
-                            <MyButton
-                              onClick={() =>
-                                handleDetailsButtonClick(project.id)
-                              }
-                            >
-                              Details
-                            </MyButton>
+                            <div className="flex gap-2">
+                              <MyButton
+                                onClick={() =>
+                                  handleDetailsButtonClick(project.id)
+                                }
+                              >
+                                Details
+                              </MyButton>
+                              <MyButton
+                                variant="outlined"
+                                onClick={() => handleOpenModal(project)}
+                              >
+                                Edit
+                              </MyButton>
+                            </div>
                           ) : (
                             project[column.key as keyof Project]
                           )}
