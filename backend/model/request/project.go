@@ -7,10 +7,11 @@ type ProjectListRequest struct {
 }
 
 type ProjectListRequestParam struct {
-	PageNumber int    `json:"page_number" form:"page_number"`
-	PageSize   int    `json:"page_size" form:"page_size"`
-	OrderBy    string `json:"order_by" form:"order_by"`
-	SortBy     string `json:"sort_by" form:"sort_by"`
+	PageNumber  int    `json:"page_number" form:"page_number"`
+	PageSize    int    `json:"page_size" form:"page_size"`
+	OrderBy     string `json:"order_by" form:"order_by"`
+	SortBy      string `json:"sort_by" form:"sort_by"`
+	ProjectName string `json:"project_name" form:"project_name"`
 }
 
 func (r *ProjectListRequestParam) ApplyDefaultsAndValidate() error {

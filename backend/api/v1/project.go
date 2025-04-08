@@ -1,7 +1,6 @@
 package apiV1
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/ChocolateAceCream/telescope/backend/model/request"
@@ -21,7 +20,6 @@ func (p *ProjectApi) GetProjectList(c *gin.Context) {
 		return
 	}
 	req.Params.ApplyDefaultsAndValidate()
-	fmt.Println("----------req----------", req)
 	resp, err := projectService.GetProjectList(c, req.Params)
 	if err != nil {
 		singleton.Logger.Error("Failed to get project list", zap.Error(err))

@@ -50,6 +50,7 @@ const Home = () => {
     const payload = {
       page_number: page + 1,
       page_size: perPage,
+      project_name: searchTerm,
     }
     const { data: resp } = await getProjectList({ params: payload })
     console.log('--------resp-----', resp)
@@ -223,7 +224,7 @@ const Home = () => {
           className=" flex-1 max-w-xs"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <MyButton variant="outlined" className="h-[40px]">
+        <MyButton variant="outlined" className="h-[40px]" onClick={loadData}>
           <Icon name="search" />
         </MyButton>
         <MyButton
