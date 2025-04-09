@@ -25,6 +25,7 @@ import { Project } from '@/types'
 import dayjs from 'dayjs'
 import imageCompression from 'browser-image-compression'
 import { putEditProject } from '@/api/project'
+import SnackbarAlert from '@/components/snackbarAlert'
 
 const Home = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -44,6 +45,9 @@ const Home = () => {
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const navigate = useNavigate()
 
@@ -156,6 +160,13 @@ const Home = () => {
     if (!e.target.files || e.target.files.length === 0) return
 
     const files = Array.from(e.target.files)
+
+    const totalFiles = formData.attachments.length + files.length
+    if (totalFiles > 9) {
+      setSnackbarMessage('You can only upload up to 9 files.')
+      setSnackbarOpen(true)
+      return
+    }
     const options = {
       maxSizeMB: 0.1,
       maxWidthOrHeight: 1920,
@@ -313,6 +324,7 @@ const Home = () => {
                 type="file"
                 onChange={handleFileUpload}
                 multiple
+                disabled={formData.attachments.length >= 9}
               />
             </MyButton>
 
@@ -430,6 +442,12 @@ const Home = () => {
           className="border-t border-gray-200"
         />
       </div>
+      <SnackbarAlert
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity="warning"
+        onClose={() => setSnackbarOpen(false)}
+      />
     </div>
   )
 }
