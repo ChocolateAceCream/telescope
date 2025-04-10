@@ -11,11 +11,14 @@ import Loading from '@/components/loading'
 import { getProjectDetails } from '@/api/project'
 import { ProjectDetails } from '@/types'
 import dayjs from 'dayjs'
+import { useTheme, useMediaQuery, Dialog } from '@mui/material'
+import Icon from '@/components/icon'
 
 import {
   Paper,
   Typography,
   CircularProgress,
+  Grid2,
   Grid,
   Card,
   CardMedia,
@@ -25,6 +28,10 @@ import {
 const Details = () => {
   const [searchParams] = useSearchParams()
   const projectId = searchParams.get('id')
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const theme = useTheme()
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md')) // md and up
 
   const [projectDetail, setProjectDetail] = useState<ProjectDetails | null>(
     null
@@ -77,7 +84,7 @@ const Details = () => {
                 Sketches
               </Typography>
 
-              <Grid container spacing={3}>
+              <Grid2 container spacing={3}>
                 {projectDetail.sketches.map((sketch) => (
                   <Grid item xs={12} sm={6} md={4} key={sketch.id}>
                     <Card className="rounded-2xl shadow-md">
@@ -86,6 +93,14 @@ const Details = () => {
                         height="200"
                         image={sketch.full_image_url}
                         alt={`Sketch ${sketch.id}`}
+                        onClick={() =>
+                          isMdUp && setPreviewImage(sketch.full_image_url)
+                        }
+                        className={
+                          isMdUp
+                            ? 'cursor-pointer hover:opacity-80 transition'
+                            : ''
+                        }
                       />
                       <CardContent>
                         <Typography variant="body2" className="text-gray-700">
@@ -96,8 +111,30 @@ const Details = () => {
                     </Card>
                   </Grid>
                 ))}
-              </Grid>
+              </Grid2>
             </div>
+            <Dialog
+              open={!!previewImage}
+              onClose={() => setPreviewImage(null)}
+              maxWidth="md"
+            >
+              <div className="relative">
+                {/* Close Button */}
+                <div onClick={() => setPreviewImage(null)}>
+                  <Icon
+                    name="close"
+                    className=" w-6 h-6 absolute top-4 right-4 z-10 text-white bg-black/50 hover:bg-black/70"
+                  />
+                </div>
+
+                {/* Image Preview */}
+                <img
+                  src={previewImage ?? ''}
+                  alt="Preview"
+                  className="w-full h-auto rounded"
+                />
+              </div>
+            </Dialog>
           </div>
         ) : (
           <div>Project not found</div>
