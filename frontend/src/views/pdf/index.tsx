@@ -79,7 +79,7 @@ export default function PDFTextRemover() {
         // Adjust these coordinates based on where the text appears in your PDF
         pages[l - 1].drawRectangle({
           x: 225,
-          y: height - 76,
+          y: height - 75,
           width: 200,
           height: 44,
           color: rgb(1, 1, 1),
