@@ -10,15 +10,9 @@ import {
 } from '@mui/material'
 import { PDFDocument, rgb } from 'pdf-lib'
 import Icon from '@/components/icon'
-import { constants } from 'buffer'
 
 type FileState = File | null
 type ProcessedPdfState = string | null
-
-const STRING_TO_REMOVE = `Transparent Window Company
-15620 HWY 99 STE 17
-Lynnwood, WA 98087
-425-245-2257`
 
 export default function PDFTextRemover() {
   const [file, setFile] = useState<FileState>(null)
@@ -28,12 +22,38 @@ export default function PDFTextRemover() {
   const [success, setSuccess] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const droppedFile = e.dataTransfer.files?.[0]
+    if (droppedFile && droppedFile.type === 'application/pdf') {
+      setFile(droppedFile)
+      setProcessedPdf(null)
+      setError(null)
+    } else {
+      setError('Please drop a valid PDF file')
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragging(false)
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile && selectedFile.type === 'application/pdf') {
       setFile(selectedFile)
       setProcessedPdf(null)
       setError(null)
+      // 👇 reset input so same file can be reselected later
+      e.target.value = ''
     } else {
       setError('Please select a PDF file')
     }
@@ -123,6 +143,21 @@ export default function PDFTextRemover() {
       </Box>
 
       <Box className="bg-white rounded-lg shadow-md p-6">
+        <Box
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          className={`border-2 border-dashed rounded-lg p-6 w-full text-center transition-colors ${
+            isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+          }`}
+        >
+          <Typography variant="body2" className="text-gray-600 mb-2">
+            Drag and drop your PDF file here
+          </Typography>
+          <Typography variant="body2" className="text-gray-500">
+            or use the button below to select manually
+          </Typography>
+        </Box>
         <input
           type="file"
           accept=".pdf"
@@ -131,7 +166,7 @@ export default function PDFTextRemover() {
           className="hidden"
         />
 
-        <Box className="flex flex-col items-center gap-4 mb-6">
+        <Box className="flex flex-col items-center gap-4 mb-6 mt-4">
           <Button
             variant="contained"
             color="primary"
