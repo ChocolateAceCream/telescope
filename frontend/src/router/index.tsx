@@ -15,6 +15,7 @@ import { useEffect } from 'react'
 import NotFound from '@/views/NotFound'
 import Demo from '@/views/Demo'
 import ProjectDetails from '@/views/project/details'
+import PDF from '@/views/pdf'
 
 const ProtectedRoute = () => {
   return (
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
           { index: true, element: <Project /> },
           { path: 'details', element: <ProjectDetails /> },
         ],
+      },
+      {
+        path: '/pdf',
+        children: [{ index: true, element: <PDF /> }],
       },
       { path: '/demo', element: <Demo /> },
       // { path: 'about', element: <About /> },

@@ -17,6 +17,10 @@ const Header = () => {
       url: '/project',
     },
     {
+      name: 'PDF',
+      url: '/pdf',
+    },
+    {
       name: 'About',
       url: '/about',
     },
