@@ -81,6 +81,17 @@ func (authService *AuthService) ExchangeCodeForToken(c *gin.Context, code string
 		return
 	}
 
+	// check whitelist
+	whitelisted, err := utils.IsEmailWhitelisted(claims.Email)
+	if err != nil {
+		return
+	}
+
+	if !whitelisted {
+		err = fmt.Errorf("error.email.not.whitelisted")
+		return
+	}
+
 	tx, err := singleton.DB.BeginTx(c, pgx.TxOptions{})
 	if err != nil {
 		singleton.Logger.Error("begin tx failed", zap.Error(err))
@@ -183,6 +194,16 @@ func (AuthService *AuthService) SendCode(c *gin.Context, email string) (err erro
 }
 
 func (AuthService *AuthService) Register(c *gin.Context, payload request.RegisterRequest) (user db.User, err error) {
+	// check email whitelist
+	whitelisted, err := utils.IsEmailWhitelisted(payload.Email)
+	if err != nil {
+		singleton.Logger.Error("check email whitelist failed", zap.Error(err))
+		return
+	}
+	if !whitelisted {
+		err = fmt.Errorf("error.email.not.whitelisted")
+		return
+	}
 	// check if email exists
 	_, err = userDao.GetUserByEmail(c, payload.Email)
 	if err == nil {

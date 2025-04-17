@@ -8,6 +8,12 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type EmailWhitelist struct {
+	ID        int32
+	Email     string
+	CreatedAt pgtype.Timestamp
+}
+
 type GoogleLogin struct {
 	ID          int32
 	Username    string

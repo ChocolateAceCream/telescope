@@ -105,6 +105,13 @@ Since my aws ec2 only have 1GB RAM, so I'm not using docker for deployment. Also
 ## 2025/03/14
 - [x] sign up with email verification
 
+## 2025/04/16
+- [x] email whitelist. Implement with redis hash.
+#### design thoughts:
+- I can use redis hash or set. Hash needs 20~30% less memory compared to set, because set need to store metadata, but set has richer build-in methods (but not useful in this case).
+- Might need to consider using LRU or LFU cache for whitelist once the length explode.
+
+
 ## TODO
 - [] SSE
 - [] job queue

@@ -83,3 +83,12 @@ func (u *UserDao) CreateNewPasswordLogin(c *gin.Context, payload db.CreateNewPas
 	}
 	return
 }
+
+func (u *UserDao) GetEmailWhitelist(c *gin.Context) (list []string, err error) {
+	list, err = singleton.Query.GetEmailWhitelist(c)
+	if err != nil {
+		singleton.Logger.Error("GetEmailWhitelist failed", zap.Error(err))
+		err = errors.New("failed to get email whitelist")
+	}
+	return
+}
