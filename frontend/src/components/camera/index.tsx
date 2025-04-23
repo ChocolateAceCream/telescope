@@ -5,7 +5,14 @@ import { on } from 'events'
 import Icon from '@/components/icon'
 import { styled } from '@mui/material/styles'
 interface CameraProps {
+  /**
+   * Callback function to handle the captured image
+   */
   onCapture: (imageUrl: string, blob: Blob) => void
+  /**
+   * If `true`, the button is disabled.
+   * @default false
+   */
   isOpen?: boolean
 }
 
